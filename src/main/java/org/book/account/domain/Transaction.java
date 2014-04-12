@@ -1,12 +1,19 @@
 package org.book.account.domain;
 
-import java.util.Date;
 import org.apache.commons.lang3.Validate;
 
+import java.util.Date;
+
 public abstract class Transaction {
-    Transaction(String description,boolean isPlanned,Amount amount,Account from,Account to) {
-        Validate.notNull(from, "The from account must not be %s", null);
-        Validate.notNull(to, "The to account must not be %s", null);
+    private final boolean isPlanned;
+    private final Account from;
+    private final Account to;
+    private String description;
+    private Amount amount;
+
+    Transaction(String description, boolean isPlanned, Amount amount, Account from, Account to) {
+        Validate.notNull(from, "The from account must not be null");
+        Validate.notNull(to, "The to account must not be null");
 
         setDescription(description);
         this.isPlanned = isPlanned;
@@ -22,13 +29,13 @@ public abstract class Transaction {
         return description;
     }
 
-    boolean isPlanned() {
-        return isPlanned;
+    public final void setDescription(String description) {
+        Validate.notNull(description, "The description must not be null");
+        this.description = description;
     }
 
-    public final void setDescription(String description) {
-        Validate.notNull(description, "The description must not be %s", null);
-        this.description = description;
+    boolean isPlanned() {
+        return isPlanned;
     }
 
     protected Amount getAmount() {
@@ -36,7 +43,7 @@ public abstract class Transaction {
     }
 
     public final void setAmount(Amount amount) {
-        Validate.notNull(amount, "The amount must not be %s", null);
+        Validate.notNull(amount, "The amount must not be null");
         this.amount = amount;
     }
 
@@ -47,10 +54,4 @@ public abstract class Transaction {
     public Account getTo() {
         return to;
     }
-
-    private String description;
-    private final boolean isPlanned;
-    private Amount amount;
-    private final Account from;
-    private final Account to;
 }

@@ -7,8 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class AccountSystem {
-    public Account generateAccount(String name,Account.AccountType accountType) {
-        Account newAccount = new Account(name,accountType);
+    private final List<Transaction> transactions = new LinkedList<Transaction>();
+    private final AccountHierarchy accounts = new AccountHierarchy();
+    private final List<Indicator> indicators = new LinkedList<Indicator>();
+
+    public Account generateAccount(String name, Account.AccountType accountType) {
+        Account newAccount = new Account(name, accountType);
         accounts.add(newAccount);
         return newAccount;
     }
@@ -27,16 +31,16 @@ public class AccountSystem {
         accounts.remove(account);
     }
 
-    public Transaction plan(String text, Date startsOn, Date endsOn, Amount amount , Account from, Account to, boolean isContinuous) {
+    public Transaction plan(String text, Date startsOn, Date endsOn, Amount amount, Account from, Account to, boolean isContinuous) {
         accounts.assertThatAccountExists(from);
         accounts.assertThatAccountExists(to);
 
         Transaction newTransaction;
 
-        if ( isContinuous ) {
-            newTransaction = new ContinuousTransaction(text,amount,from,to,startsOn,endsOn);
+        if (isContinuous) {
+            newTransaction = new ContinuousTransaction(text, amount, from, to, startsOn, endsOn);
         } else {
-            newTransaction = new NonRecurringTransaction(text,amount,from,to,startsOn,endsOn);
+            newTransaction = new NonRecurringTransaction(text, amount, from, to, startsOn, endsOn);
         }
         add(newTransaction);
         return newTransaction;
@@ -46,7 +50,7 @@ public class AccountSystem {
         accounts.assertThatAccountExists(from);
         accounts.assertThatAccountExists(to);
 
-        Transaction newTransaction = new OccurredTransaction(text,amount,from,to,occurredOn);
+        Transaction newTransaction = new OccurredTransaction(text, amount, from, to, occurredOn);
         add(newTransaction);
         return newTransaction;
     }
@@ -64,7 +68,7 @@ public class AccountSystem {
     }
 
     public void track(Indicator anIndicator) {
-        Validate.notNull(anIndicator, "The indicator must not be %s", null);
+        Validate.notNull(anIndicator, "The indicator must not be null");
 
         indicators.add(anIndicator);
     }
@@ -72,9 +76,5 @@ public class AccountSystem {
     public void trackNoLonger(Indicator anIndicator) {
         indicators.remove(anIndicator);
     }
-
-    private final List<Transaction> transactions = new LinkedList<Transaction>();
-    private final AccountHierarchy accounts = new AccountHierarchy();
-    private final List<Indicator> indicators = new LinkedList<Indicator>();
 
 }

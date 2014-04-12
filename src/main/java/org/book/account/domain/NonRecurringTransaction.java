@@ -6,12 +6,15 @@ import java.util.Date;
 
 public class NonRecurringTransaction extends Transaction {
 
-    NonRecurringTransaction(String description,Amount amount,Account from,Account to,Date startsOn,Date endsOn) {
-        super(description,true,amount,from,to);
+    private final Date startsOn;
+    private final Date endsOn;
 
-        Validate.notNull(startsOn, "The startsOn date must not be %s", null);
-        Validate.notNull(endsOn, "The starts on must not be %s", null);
-        if ( startsOn.after(endsOn)) {
+    NonRecurringTransaction(String description, Amount amount, Account from, Account to, Date startsOn, Date endsOn) {
+        super(description, true, amount, from, to);
+
+        Validate.notNull(startsOn, "The startsOn date must not be null");
+        Validate.notNull(endsOn, "The endsOn on must not be null");
+        if (startsOn.after(endsOn)) {
             throw new IllegalArgumentException("non recurring transaction should have a start date before the given end date");
         }
 
@@ -21,15 +24,12 @@ public class NonRecurringTransaction extends Transaction {
 
     @Override
     public Amount valueAt(Date date) {
-        Validate.notNull(date, "The date must not be %s", null);
+        Validate.notNull(date, "The date must not be null");
 
-        if ( date.after(startsOn)) {
+        if (date.after(startsOn)) {
             return getAmount();
         } else {
             return Amount.noAmount();
         }
     }
-
-    private final Date startsOn;
-    private final Date endsOn;
 }
