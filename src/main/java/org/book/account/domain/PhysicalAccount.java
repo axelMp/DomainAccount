@@ -1,17 +1,14 @@
 package org.book.account.domain;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.LinkedList;
 import java.util.List;
 
 public class PhysicalAccount {
     PhysicalAccount(String name) {
-        if (null == name) {
-            throw new IllegalArgumentException("Specify non-null name for account");
-        }
-
-        if ( "".equals(name) ) {
-            throw new IllegalArgumentException("Specify non-empty name for account");
-        }
+        Validate.notNull(name, "The name must not be %s", null);
+        Validate.notBlank(name, "Specify non-empty name for account");
 
         this.name = name;
     }
@@ -21,9 +18,7 @@ public class PhysicalAccount {
     }
 
     public void contains(Account account) {
-        if (null == account) {
-            throw new IllegalArgumentException("Specify non-null for account");
-        }
+        Validate.notNull(account, "The account must not be %s", null);
         contains.add(account);
     }
 

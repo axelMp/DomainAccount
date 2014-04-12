@@ -1,12 +1,12 @@
 package org.book.account.domain;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.Date;
 
 public abstract class Indicator<TIndicatorValue> {
     public Indicator(String name) {
-        if ( null == name ) {
-            throw new IllegalArgumentException("name cannot be null");
-        }
+        Validate.notNull(name, "The name must not be %s", null);
         this.name = name;
     }
 

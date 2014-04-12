@@ -1,5 +1,7 @@
 package org.book.account.domain;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,9 +64,7 @@ public class AccountSystem {
     }
 
     public void track(Indicator anIndicator) {
-        if ( null == anIndicator) {
-            throw new IllegalArgumentException("provide a non-null indicator");
-        }
+        Validate.notNull(anIndicator, "The indicator must not be %s", null);
 
         indicators.add(anIndicator);
     }

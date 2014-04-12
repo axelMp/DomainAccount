@@ -1,21 +1,17 @@
 package org.book.account.domain;
 
 import java.util.Date;
+import org.apache.commons.lang3.Validate;
 
 public abstract class Transaction {
     Transaction(String description,boolean isPlanned,Amount amount,Account from,Account to) {
+        Validate.notNull(from, "The from account must not be %s", null);
+        Validate.notNull(to, "The to account must not be %s", null);
+
         setDescription(description);
         this.isPlanned = isPlanned;
         setAmount(amount);
-
-        if ( null == from ) {
-            throw new IllegalArgumentException("from has to be non-null");
-        }
         this.from = from;
-
-        if ( null == to ) {
-            throw new IllegalArgumentException("to has to be non-null");
-        }
         this.to = to;
 
     }
@@ -31,9 +27,7 @@ public abstract class Transaction {
     }
 
     public final void setDescription(String description) {
-        if ( null == description ) {
-            throw new IllegalArgumentException("description has to be non-null");
-        }
+        Validate.notNull(description, "The description must not be %s", null);
         this.description = description;
     }
 
@@ -42,9 +36,7 @@ public abstract class Transaction {
     }
 
     public final void setAmount(Amount amount) {
-        if ( null == amount ) {
-            throw new IllegalArgumentException("amount has to be non-null");
-        }
+        Validate.notNull(amount, "The amount must not be %s", null);
         this.amount = amount;
     }
 
