@@ -10,6 +10,16 @@ public class AccountSystem {
     private final List<Transaction> transactions = new LinkedList<Transaction>();
     private final AccountHierarchy accounts = new AccountHierarchy();
     private final List<Indicator> indicators = new LinkedList<Indicator>();
+    private final String name;
+
+    public AccountSystem(String name) {
+        Validate.notNull(name, "The name must not be null");
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public Account generateAccount(String name, Account.AccountType accountType) {
         Account newAccount = new Account(name, accountType);

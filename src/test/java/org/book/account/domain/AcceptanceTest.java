@@ -8,7 +8,7 @@ import java.util.Date;
 public class AcceptanceTest {
     @Test
     public void simpleAccounting() {
-        AccountSystem book = new AccountSystem();
+        AccountSystem book = new AccountSystem("randomName");
         final String anAccountName = "anAccountName";
         final String anotherAccountName = "anotherAccountName";
         Account anAccount = book.generateAccount(anAccountName, Account.AccountType.SHORT_TERM_ASSET);
