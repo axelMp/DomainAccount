@@ -22,12 +22,17 @@ public class Transaction implements ITransaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // Adding the join information to ledger results in massive duplication
+    @ManyToOne
+    @JoinColumn(name = "ledger_id")
+    private Ledger ledger;
+
     // for hibernate
     public Transaction() {
 
     }
 
-    Transaction(String narration, Amount amount, Account debitor, Account creditor, Date occurredOn) {
+    Transaction(String narration, Amount amount, Account debitor, Account creditor, Date occurredOn, Ledger ledger) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(creditor, "The creditor account must not be null");
         Validate.notNull(occurredOn, "The occurredOn must not be null");
@@ -37,6 +42,7 @@ public class Transaction implements ITransaction {
         this.debitor = debitor;
         this.creditor = creditor;
         this.occurredOn = occurredOn;
+        this.ledger = ledger;
     }
 
     public Date getOccurredOn() {

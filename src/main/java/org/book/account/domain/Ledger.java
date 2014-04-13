@@ -16,7 +16,7 @@ public class Ledger {
     private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
     @Column(name = "NAME")
     private String name;
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "ledger")
     private List<Transaction> transactions = new LinkedList<Transaction>();
     @OneToMany(mappedBy = "ledger")
     private List<Account> accounts = new LinkedList<Account>();
@@ -83,7 +83,7 @@ public class Ledger {
         assertThatAccountExists(debitor);
         assertThatAccountExists(creditor);
 
-        Transaction newTransaction = new Transaction(narration, amount, debitor, creditor, occurredOn);
+        Transaction newTransaction = new Transaction(narration, amount, debitor, creditor, occurredOn, this);
         transactions.add(newTransaction);
         return newTransaction;
     }
