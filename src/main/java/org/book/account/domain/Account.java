@@ -1,38 +1,32 @@
 package org.book.account.domain;
 
-import org.apache.commons.lang3.Validate;
-
 import javax.persistence.*;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 public class Account {
     @Column(name = "NAME")
-    private final String name;
+    private String name;
     @Column(name = "CURRENCY")
     @Enumerated(EnumType.STRING)
-    private final AccountType accountType;
-    @OneToMany
-    private final List<Transaction> transactions = new LinkedList<Transaction>();
-    @OneToMany
-    private final List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
+    private AccountType accountType;
+
+    @Column(name = "LEDGER")
+    private Ledger ledger;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    Account(String name, AccountType accountType) {
-        Validate.notNull(name, "The name must not be null");
-        Validate.notBlank(name, "Specify non-empty name for account");
-
+    Account(String name, AccountType accountType, Ledger ledger) {
         this.name = name;
         this.accountType = accountType;
+        this.ledger = ledger;
     }
 
     public Amount closure(Date date) {
         Amount result = Amount.noAmount();
-        for (Transaction aTransaction : transactions) {
+        for (Transaction aTransaction : ledger.getTransactions()) {
             if (aTransaction.getDebitor().equals(this)) {
                 result = Amount.subtract(result, aTransaction.valueAt(date));
             } else {
@@ -40,22 +34,6 @@ public class Account {
             }
         }
         return result;
-    }
-
-    void add(Transaction aTransaction) {
-        transactions.add(aTransaction);
-    }
-
-    void add(PlannedTransaction aTransaction) {
-        plannedTransactions.add(aTransaction);
-    }
-
-    void remove(Transaction aTransaction) {
-        transactions.remove(aTransaction);
-    }
-
-    void remove(PlannedTransaction aTransaction) {
-        plannedTransactions.remove(aTransaction);
     }
 
     public String getName() {

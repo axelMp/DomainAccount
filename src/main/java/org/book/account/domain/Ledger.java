@@ -28,6 +28,10 @@ public class Ledger {
         this.name = name;
     }
 
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
     public String getName() {
         return name;
     }
@@ -38,7 +42,7 @@ public class Ledger {
                 throw new IllegalArgumentException("account with name " + name + " already exists");
             }
         }
-        Account newAccount = new Account(name, accountType);
+        Account newAccount = new Account(name, accountType, this);
         accounts.add(newAccount);
         return newAccount;
     }
@@ -64,20 +68,16 @@ public class Ledger {
         accounts.remove(account);
     }
 
-    public Transaction book(String text, Date occurredOn, Amount amount, Account from, Account to) {
-        assertThatAccountExists(from);
-        assertThatAccountExists(to);
+    public Transaction book(String narration, Date occurredOn, Amount amount, Account debitor, Account creditor) {
+        assertThatAccountExists(debitor);
+        assertThatAccountExists(creditor);
 
-        Transaction newTransaction = new Transaction(text, amount, from, to, occurredOn);
+        Transaction newTransaction = new Transaction(narration, amount, debitor, creditor, occurredOn);
         transactions.add(newTransaction);
-        newTransaction.getDebitor().add(newTransaction);
-        newTransaction.getCreditor().add(newTransaction);
         return newTransaction;
     }
 
     public void remove(Transaction transaction) {
         transactions.remove(transaction);
-        transaction.getDebitor().remove(transaction);
-        transaction.getCreditor().remove(transaction);
     }
 }

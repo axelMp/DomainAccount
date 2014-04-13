@@ -33,7 +33,7 @@ local.properties
 .cproject
 
 # PDT-specific
-.buildpath
+.builpath
 
 
 #################
