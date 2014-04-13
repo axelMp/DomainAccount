@@ -7,7 +7,7 @@ import java.util.Date;
 public class Account {
     @Column(name = "NAME")
     private String name;
-    @Column(name = "CURRENCY")
+    @Column(name = "ACCOUNT_TYPE")
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
@@ -27,10 +27,12 @@ public class Account {
     public Amount closure(Date date) {
         Amount result = Amount.noAmount();
         for (Transaction aTransaction : ledger.getTransactions()) {
-            if (aTransaction.getDebitor().equals(this)) {
-                result = Amount.subtract(result, aTransaction.valueAt(date));
-            } else {
-                result = Amount.add(result, aTransaction.valueAt(date));
+            if (aTransaction.getOccurredOn().before(date)) {
+                if (aTransaction.getDebitor().equals(this)) {
+                    result = Amount.subtract(result, aTransaction.getAmount());
+                } else {
+                    result = Amount.add(result, aTransaction.getAmount());
+                }
             }
         }
         return result;

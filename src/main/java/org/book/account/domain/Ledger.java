@@ -14,7 +14,7 @@ public class Ledger {
 
     private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
     @Column(name = "NAME")
-    private final String name;
+    private String name;
     @OneToMany
     private List<Transaction> transactions = new LinkedList<Transaction>();
     @OneToMany

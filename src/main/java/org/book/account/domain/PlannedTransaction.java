@@ -2,33 +2,31 @@ package org.book.account.domain;
 
 import org.apache.commons.lang3.Validate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class PlannedTransaction implements ITransaction {
-    private final Account from;
-    private final Account to;
-    private final Date startsOn;
-    private final Date endsOn;
-    private final boolean isContinuous;
-    private String description;
+    @Column(name = "DEBITOR")
+    private Account debitor;
+    private Account creditor;
+    private Date startsOn;
+    private Date endsOn;
+    private boolean isContinuous;
+    private String narration;
     private Amount amount;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    PlannedTransaction(String description, Amount amount, Account from, Account to, Date startsOn, Date endsOn, boolean isContinuous) {
-        Validate.notNull(from, "The from account must not be null");
+    PlannedTransaction(String narration, Amount amount, Account debitor, Account to, Date startsOn, Date endsOn, boolean isContinuous) {
+        Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(to, "The to account must not be null");
 
-        setDescription(description);
+        setNarration(narration);
         setAmount(amount);
-        this.from = from;
-        this.to = to;
+        this.debitor = debitor;
+        this.creditor = to;
 
         Validate.notNull(startsOn, "The startsOn date must not be null");
         Validate.notNull(endsOn, "The endsOn on must not be null");
@@ -42,12 +40,12 @@ public class PlannedTransaction implements ITransaction {
     }
 
     public String getNarration() {
-        return description;
+        return narration;
     }
 
-    public final void setDescription(String description) {
-        Validate.notNull(description, "The description must not be null");
-        this.description = description;
+    public final void setNarration(String narration) {
+        Validate.notNull(narration, "The narration must not be null");
+        this.narration = narration;
     }
 
     protected Amount getAmount() {
@@ -60,11 +58,11 @@ public class PlannedTransaction implements ITransaction {
     }
 
     public Account getDebitor() {
-        return from;
+        return debitor;
     }
 
     public Account getCreditor() {
-        return to;
+        return creditor;
     }
 
     public Amount valueAt(Date date) {

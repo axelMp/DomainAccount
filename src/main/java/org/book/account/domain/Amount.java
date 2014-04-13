@@ -11,10 +11,10 @@ import javax.persistence.Enumerated;
 @Embeddable
 public class Amount {
     @Column(name = "CENTS")
-    private final Integer cents;
+    private Integer cents;
     @Column(name = "CURRENCY")
     @Enumerated(EnumType.STRING)
-    private final Currency currency;
+    private Currency currency;
 
     public Amount(Integer cents, Currency currency) {
         this.cents = cents;

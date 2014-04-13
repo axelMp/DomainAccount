@@ -11,37 +11,41 @@ import java.util.Date;
 @Entity
 public class Transaction implements ITransaction {
 
-    private final Account from;
-    private final Account to;
-    private final Date occurredOn;
+    private Account debitor;
+    private Account creditor;
+    private Date occurredOn;
     private String description;
     private Amount amount;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    Transaction(String description, Amount amount, Account from, Account to, Date occurredOn) {
-        Validate.notNull(from, "The from account must not be null");
-        Validate.notNull(to, "The to account must not be null");
-        Validate.notNull(from, "The occurredOn must not be null");
+    Transaction(String narration, Amount amount, Account debitor, Account creditor, Date occurredOn) {
+        Validate.notNull(debitor, "The debitor account must not be null");
+        Validate.notNull(creditor, "The creditor account must not be null");
+        Validate.notNull(occurredOn, "The occurredOn must not be null");
 
-        setDescription(description);
+        setNarration(narration);
         setAmount(amount);
-        this.from = from;
-        this.to = to;
+        this.debitor = debitor;
+        this.creditor = creditor;
         this.occurredOn = occurredOn;
+    }
+
+    public Date getOccurredOn() {
+        return occurredOn;
     }
 
     public String getNarration() {
         return description;
     }
 
-    public void setDescription(String description) {
-        Validate.notNull(description, "The description must not be null");
-        this.description = description;
+    public void setNarration(String narration) {
+        Validate.notNull(narration, "The narration must not be null");
+        this.description = narration;
     }
 
-    private Amount getAmount() {
+    public Amount getAmount() {
         return amount;
     }
 
@@ -51,20 +55,10 @@ public class Transaction implements ITransaction {
     }
 
     public Account getDebitor() {
-        return from;
+        return debitor;
     }
 
     public Account getCreditor() {
-        return to;
-    }
-
-    public Amount valueAt(Date date) {
-        Validate.notNull(date, "The date must not be null");
-
-        if (date.after(occurredOn)) {
-            return getAmount();
-        } else {
-            return Amount.noAmount();
-        }
+        return creditor;
     }
 }
