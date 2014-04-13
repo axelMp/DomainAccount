@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class PlannedTransaction implements ITransaction {
+public class PlannedTransaction implements Transaction {
     private final Account from;
     private final Account to;
     private final Date startsOn;
@@ -41,7 +41,7 @@ public class PlannedTransaction implements ITransaction {
         this.endsOn = endsOn;
     }
 
-    public String getDescription() {
+    public String getNarration() {
         return description;
     }
 
@@ -59,11 +59,11 @@ public class PlannedTransaction implements ITransaction {
         this.amount = amount;
     }
 
-    public Account getFrom() {
+    public Account getDebitor() {
         return from;
     }
 
-    public Account getTo() {
+    public Account getCreditor() {
         return to;
     }
 

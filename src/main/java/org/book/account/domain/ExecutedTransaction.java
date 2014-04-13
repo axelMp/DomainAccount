@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class ExecutedTransaction implements ITransaction {
+public class ExecutedTransaction implements Transaction {
 
     private final Account from;
     private final Account to;
@@ -32,7 +32,7 @@ public class ExecutedTransaction implements ITransaction {
         this.occurredOn = occurredOn;
     }
 
-    public String getDescription() {
+    public String getNarration() {
         return description;
     }
 
@@ -50,11 +50,11 @@ public class ExecutedTransaction implements ITransaction {
         this.amount = amount;
     }
 
-    public Account getFrom() {
+    public Account getDebitor() {
         return from;
     }
 
-    public Account getTo() {
+    public Account getCreditor() {
         return to;
     }
 

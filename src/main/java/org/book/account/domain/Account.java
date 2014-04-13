@@ -33,7 +33,7 @@ public class Account {
     public Amount closure(Date date) {
         Amount result = Amount.noAmount();
         for (ExecutedTransaction aTransaction : executedTransactions) {
-            if (aTransaction.getFrom().equals(this)) {
+            if (aTransaction.getDebitor().equals(this)) {
                 result = Amount.subtract(result, aTransaction.valueAt(date));
             } else {
                 result = Amount.add(result, aTransaction.valueAt(date));
