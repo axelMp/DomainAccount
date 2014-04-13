@@ -3,16 +3,14 @@ package org.book.account.domain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 class AccountHierarchy {
     private static final Logger logger = LogManager.getLogger(Account.class.getName());
+    @OneToMany
     private final List<Account> accounts = new LinkedList<Account>();
     private final List<PhysicalAccount> physicalAccounts = new LinkedList<PhysicalAccount>();
     @Id
@@ -21,7 +19,7 @@ class AccountHierarchy {
 
     void add(Account account) {
         for (Account anAccount : accounts) {
-            if ( anAccount.getName().equals(account.getName())) {
+            if (anAccount.getName().equals(account.getName())) {
                 throw new IllegalArgumentException("account with name " + account.getName() + " already exists");
             }
         }
