@@ -19,14 +19,10 @@ public class Budget {
 
         PlannedTransaction newTransaction = new PlannedTransaction(text, amount, from, to, startsOn, endsOn, isContinuous);
         plannedTransactions.add(newTransaction);
-        newTransaction.getDebitor().add(newTransaction);
-        newTransaction.getCreditor().add(newTransaction);
         return newTransaction;
     }
 
     public void remove(PlannedTransaction transaction) {
         plannedTransactions.remove(transaction);
-        transaction.getDebitor().remove(transaction);
-        transaction.getCreditor().remove(transaction);
     }
 }
