@@ -19,6 +19,10 @@ public class Budget {
     @OneToOne
     private Ledger ledger;
 
+    // required by hibernate
+    public Budget() {
+
+    }
     public Budget(Ledger associatedLedger) {
         Validate.notNull(associatedLedger, "associatedLedger cannot be null");
         this.ledger = associatedLedger;

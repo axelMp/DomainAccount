@@ -19,6 +19,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // required by hibernate
+    public Account() {
+
+    }
+
     Account(String name, AccountType accountType, Ledger ledger) {
         this.name = name;
         this.accountType = accountType;

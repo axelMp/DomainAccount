@@ -22,6 +22,11 @@ public class Transaction implements ITransaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // for hibernate
+    public Transaction() {
+
+    }
+
     Transaction(String narration, Amount amount, Account debitor, Account creditor, Date occurredOn) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(creditor, "The creditor account must not be null");

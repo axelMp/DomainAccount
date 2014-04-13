@@ -24,6 +24,11 @@ public class Ledger {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // required by hibernate
+    public Ledger() {
+
+    }
+
     public Ledger(String name) {
         Validate.notNull(name, "The name must not be null");
         this.name = name;

@@ -16,6 +16,11 @@ public class Amount {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
+    // required by hibernate
+    public Amount() {
+
+    }
+
     public Amount(Integer cents, Currency currency) {
         this.cents = cents;
         this.currency = currency;

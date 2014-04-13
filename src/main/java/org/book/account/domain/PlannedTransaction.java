@@ -23,6 +23,11 @@ public class PlannedTransaction implements ITransaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // required by hibernate
+    public PlannedTransaction() {
+
+    }
+
     PlannedTransaction(String narration, Amount amount, Account debitor, Account to, Date startsOn, Date endsOn, boolean isContinuous) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(to, "The to account must not be null");
