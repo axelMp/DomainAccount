@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+
 public class AccountSystem {
     private final List<Transaction> transactions = new LinkedList<Transaction>();
     private final AccountHierarchy accounts = new AccountHierarchy();
@@ -56,7 +57,7 @@ public class AccountSystem {
         return newTransaction;
     }
 
-    public Transaction book(String text, Date occurredOn, Amount amount , Account from, Account to) {
+    public Transaction book(String text, Date occurredOn, Amount amount, Account from, Account to) {
         accounts.assertThatAccountExists(from);
         accounts.assertThatAccountExists(to);
 

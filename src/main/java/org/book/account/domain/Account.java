@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Account {
+
     private final String name;
     private final AccountType accountType;
     private final List<Transaction> transactions = new LinkedList<Transaction>();

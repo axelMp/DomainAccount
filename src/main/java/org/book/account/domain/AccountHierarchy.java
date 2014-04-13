@@ -1,17 +1,20 @@
 package org.book.account.domain;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.LinkedList;
 import java.util.List;
 
 class AccountHierarchy {
-    void add(Account account) {
-        if ( null == account ) {
-            throw new IllegalArgumentException("account cannot be null");
-        }
+    private static final Logger logger = LogManager.getLogger(Account.class.getName());
+    private final List<Account> accounts = new LinkedList<Account>();
+    private final List<PhysicalAccount> physicalAccounts = new LinkedList<PhysicalAccount>();
 
-        for (Account anAccount:accounts) {
+    void add(Account account) {
+        for (Account anAccount : accounts) {
             if ( anAccount.getName().equals(account.getName())) {
-                throw new IllegalArgumentException("account with name "+account.getName()+ " already exists");
+                throw new IllegalArgumentException("account with name " + account.getName() + " already exists");
             }
         }
 
@@ -19,20 +22,13 @@ class AccountHierarchy {
     }
 
     void remove(Account account) {
-        if ( null == account ) {
-            throw new IllegalArgumentException("account cannot be null");
-        }
         accounts.remove(account);
     }
 
     void add(PhysicalAccount account) {
-        if ( null == account ) {
-            throw new IllegalArgumentException("physical account cannot be null");
-        }
-
-        for (PhysicalAccount anAccount:physicalAccounts) {
-            if ( anAccount.getName().equals(account.getName())) {
-                throw new IllegalArgumentException("physical account with name "+account.getName()+ " already exists");
+        for (PhysicalAccount anAccount : physicalAccounts) {
+            if (anAccount.getName().equals(account.getName())) {
+                throw new IllegalArgumentException("physical account with name " + account.getName() + " already exists");
             }
         }
 
@@ -40,18 +36,23 @@ class AccountHierarchy {
     }
 
     void remove(PhysicalAccount account) {
-        if ( null == account ) {
-            throw new IllegalArgumentException("account cannot be null");
-        }
         physicalAccounts.remove(account);
     }
 
     void assertThatAccountExists(Account anAccount) {
-        if ( ! accounts.contains(anAccount)) {
-            throw new IllegalArgumentException("Account "+anAccount.getName()+" does not exist in this account system");
+        if (!accounts.contains(anAccount)) {
+            if (logger.isErrorEnabled()) {
+                logger.error("account " + anAccount.getName() + " unknown");
+
+                StringBuilder builder = new StringBuilder();
+                for (Account account : accounts) {
+                    builder.append(account.getName());
+                    builder.append(" ");
+                }
+                logger.error("known accounts are " + builder.toString());
+            }
+
+            throw new IllegalArgumentException("Account " + anAccount.getName() + " does not exist");
         }
     }
-
-    private final List<Account> accounts = new LinkedList<Account>();
-    private final List<PhysicalAccount> physicalAccounts = new LinkedList<PhysicalAccount>();
 }
