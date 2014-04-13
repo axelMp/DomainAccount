@@ -18,9 +18,10 @@ public class Ledger {
     private String name;
     @OneToMany(mappedBy = "id")
     private List<Transaction> transactions = new LinkedList<Transaction>();
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "ledger")
     private List<Account> accounts = new LinkedList<Account>();
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

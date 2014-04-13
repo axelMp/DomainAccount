@@ -11,7 +11,7 @@ public class Account {
     private AccountType accountType;
 
     @ManyToOne
-    @JoinColumn(name = "LEDGER_ID")
+    @JoinColumn(name = "ledger_id")
     private Ledger ledger;
 
     @Id
