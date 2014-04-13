@@ -9,16 +9,26 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class PlannedTransaction extends Transaction {
+public class PlannedTransaction implements ITransaction {
+    private final Account from;
+    private final Account to;
     private final Date startsOn;
     private final Date endsOn;
     private final boolean isContinuous;
+    private String description;
+    private Amount amount;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     PlannedTransaction(String description, Amount amount, Account from, Account to, Date startsOn, Date endsOn, boolean isContinuous) {
-        super(description, amount, from, to);
+        Validate.notNull(from, "The from account must not be null");
+        Validate.notNull(to, "The to account must not be null");
+
+        setDescription(description);
+        setAmount(amount);
+        this.from = from;
+        this.to = to;
 
         Validate.notNull(startsOn, "The startsOn date must not be null");
         Validate.notNull(endsOn, "The endsOn on must not be null");
@@ -31,7 +41,32 @@ public class PlannedTransaction extends Transaction {
         this.endsOn = endsOn;
     }
 
-    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public final void setDescription(String description) {
+        Validate.notNull(description, "The description must not be null");
+        this.description = description;
+    }
+
+    protected Amount getAmount() {
+        return amount;
+    }
+
+    public final void setAmount(Amount amount) {
+        Validate.notNull(amount, "The amount must not be null");
+        this.amount = amount;
+    }
+
+    public Account getFrom() {
+        return from;
+    }
+
+    public Account getTo() {
+        return to;
+    }
+
     public Amount valueAt(Date date) {
         Validate.notNull(date, "The date must not be null");
 
