@@ -15,7 +15,7 @@ public class AcceptanceTest {
         Account anotherAccount = book.generateAccount(anotherAccountName, Account.AccountType.SHORT_TERM_ASSET);
         Date today = new Date();
         Amount randomAmount = new Amount(100, Amount.Currency.EUR);
-        Transaction aTransaction = book.book("aTransaction",today,randomAmount,anAccount,anotherAccount);
+        ExecutedTransaction aTransaction = book.book("aTransaction", today, randomAmount, anAccount, anotherAccount);
         book.remove(aTransaction);
     }
 }
