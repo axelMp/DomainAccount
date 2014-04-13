@@ -5,18 +5,16 @@ import org.apache.commons.lang3.Validate;
 import java.util.Date;
 
 public abstract class Transaction {
-    private final boolean isPlanned;
     private final Account from;
     private final Account to;
     private String description;
     private Amount amount;
 
-    Transaction(String description, boolean isPlanned, Amount amount, Account from, Account to) {
+    Transaction(String description, Amount amount, Account from, Account to) {
         Validate.notNull(from, "The from account must not be null");
         Validate.notNull(to, "The to account must not be null");
 
         setDescription(description);
-        this.isPlanned = isPlanned;
         setAmount(amount);
         this.from = from;
         this.to = to;
@@ -32,10 +30,6 @@ public abstract class Transaction {
     public final void setDescription(String description) {
         Validate.notNull(description, "The description must not be null");
         this.description = description;
-    }
-
-    boolean isPlanned() {
-        return isPlanned;
     }
 
     protected Amount getAmount() {

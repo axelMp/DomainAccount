@@ -46,13 +46,7 @@ public class AccountSystem {
         accounts.assertThatAccountExists(from);
         accounts.assertThatAccountExists(to);
 
-        Transaction newTransaction;
-
-        if (isContinuous) {
-            newTransaction = new ContinuousTransaction(text, amount, from, to, startsOn, endsOn);
-        } else {
-            newTransaction = new NonRecurringTransaction(text, amount, from, to, startsOn, endsOn);
-        }
+        Transaction newTransaction = new PlannedTransaction(text, amount, from, to, startsOn, endsOn, isContinuous);
         add(newTransaction);
         return newTransaction;
     }
@@ -61,7 +55,7 @@ public class AccountSystem {
         accounts.assertThatAccountExists(from);
         accounts.assertThatAccountExists(to);
 
-        Transaction newTransaction = new OccurredTransaction(text, amount, from, to, occurredOn);
+        Transaction newTransaction = new ExecutedTransaction(text, amount, from, to, occurredOn);
         add(newTransaction);
         return newTransaction;
     }
