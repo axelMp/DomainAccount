@@ -2,21 +2,23 @@ package org.book.account.domain;
 
 import org.apache.commons.lang3.Validate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "transaction")
 public class Transaction implements ITransaction {
-
+    @ManyToOne
+    @JoinColumn(name = "debitor_id")
     private Account debitor;
+    @ManyToOne
+    @JoinColumn(name = "creditor_id")
     private Account creditor;
     private Date occurredOn;
     private String description;
     private Amount amount;
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

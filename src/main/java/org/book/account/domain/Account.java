@@ -4,17 +4,18 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "account")
 public class Account {
-    @Column(name = "NAME")
     private String name;
-    @Column(name = "ACCOUNT_TYPE")
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
-    @Column(name = "LEDGER")
+    @ManyToOne
+    @JoinColumn(name = "LEDGER_ID")
     private Ledger ledger;
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

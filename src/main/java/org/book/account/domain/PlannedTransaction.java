@@ -6,9 +6,13 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "planned_transaction")
 public class PlannedTransaction implements ITransaction {
-    @Column(name = "DEBITOR")
+    @ManyToOne
+    @JoinColumn(name = "debitor_id")
     private Account debitor;
+    @ManyToOne
+    @JoinColumn(name = "creditor_id")
     private Account creditor;
     private Date startsOn;
     private Date endsOn;

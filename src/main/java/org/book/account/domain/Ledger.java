@@ -10,14 +10,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(name = "ledger")
 public class Ledger {
 
     private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
     @Column(name = "NAME")
     private String name;
-    @OneToMany
+    @OneToMany(mappedBy = "id")
     private List<Transaction> transactions = new LinkedList<Transaction>();
-    @OneToMany
+    @OneToMany(mappedBy = "id")
     private List<Account> accounts = new LinkedList<Account>();
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

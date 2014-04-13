@@ -8,13 +8,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(name = "budget")
 public class Budget {
-    @OneToMany
+    @OneToMany(mappedBy = "id")
     private List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "LEDGER")
+    @OneToOne
     private Ledger ledger;
 
     public Budget(Ledger associatedLedger) {
