@@ -10,7 +10,8 @@ public class Account {
 
     private final String name;
     private final AccountType accountType;
-    private final List<Transaction> transactions = new LinkedList<Transaction>();
+    private final List<ExecutedTransaction> executedTransactions = new LinkedList<ExecutedTransaction>();
+    private final List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
 
     Account(String name, AccountType accountType) {
         Validate.notNull(name, "The name must not be null");
@@ -22,11 +23,7 @@ public class Account {
 
     public Amount closure(Date date) {
         Amount result = Amount.noAmount();
-        for (Transaction aTransaction : transactions) {
-            if (aTransaction.isPlanned()) {
-                continue;
-            }
-
+        for (ExecutedTransaction aTransaction : executedTransactions) {
             if (aTransaction.getFrom().equals(this)) {
                 result = Amount.subtract(result, aTransaction.valueAt(date));
             } else {
@@ -36,12 +33,20 @@ public class Account {
         return result;
     }
 
-    void add(Transaction aTransaction) {
-        transactions.add(aTransaction);
+    void add(ExecutedTransaction aTransaction) {
+        executedTransactions.add(aTransaction);
     }
 
-    void remove(Transaction aTransaction) {
-        transactions.remove(aTransaction);
+    void add(PlannedTransaction aTransaction) {
+        plannedTransactions.add(aTransaction);
+    }
+
+    void remove(ExecutedTransaction aTransaction) {
+        executedTransactions.remove(aTransaction);
+    }
+
+    void remove(PlannedTransaction aTransaction) {
+        plannedTransactions.remove(aTransaction);
     }
 
     public String getName() {

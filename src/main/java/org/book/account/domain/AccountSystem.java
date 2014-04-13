@@ -8,7 +8,8 @@ import java.util.List;
 
 
 public class AccountSystem {
-    private final List<Transaction> transactions = new LinkedList<Transaction>();
+    private final List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
+    private final List<ExecutedTransaction> executedTransactions = new LinkedList<ExecutedTransaction>();
     private final AccountHierarchy accounts = new AccountHierarchy();
     private final List<Indicator> indicators = new LinkedList<Indicator>();
     private final String name;
@@ -42,36 +43,39 @@ public class AccountSystem {
         accounts.remove(account);
     }
 
-    public Transaction plan(String text, Date startsOn, Date endsOn, Amount amount, Account from, Account to, boolean isContinuous) {
+    public PlannedTransaction plan(String text, Date startsOn, Date endsOn, Amount amount, Account from, Account to, boolean isContinuous) {
         accounts.assertThatAccountExists(from);
         accounts.assertThatAccountExists(to);
 
-        Transaction newTransaction = new PlannedTransaction(text, amount, from, to, startsOn, endsOn, isContinuous);
-        add(newTransaction);
+        PlannedTransaction newTransaction = new PlannedTransaction(text, amount, from, to, startsOn, endsOn, isContinuous);
+        plannedTransactions.add(newTransaction);
+        newTransaction.getFrom().add(newTransaction);
+        newTransaction.getTo().add(newTransaction);
         return newTransaction;
     }
 
-    public Transaction book(String text, Date occurredOn, Amount amount, Account from, Account to) {
+    public ExecutedTransaction book(String text, Date occurredOn, Amount amount, Account from, Account to) {
         accounts.assertThatAccountExists(from);
         accounts.assertThatAccountExists(to);
 
-        Transaction newTransaction = new ExecutedTransaction(text, amount, from, to, occurredOn);
-        add(newTransaction);
+        ExecutedTransaction newTransaction = new ExecutedTransaction(text, amount, from, to, occurredOn);
+        executedTransactions.add(newTransaction);
+        newTransaction.getFrom().add(newTransaction);
+        newTransaction.getTo().add(newTransaction);
         return newTransaction;
     }
 
-    public void remove(Transaction transaction) {
-        transactions.remove(transaction);
+    public void remove(ExecutedTransaction transaction) {
+        executedTransactions.remove(transaction);
         transaction.getFrom().remove(transaction);
         transaction.getTo().remove(transaction);
     }
 
-    private void add(Transaction aTransaction) {
-        transactions.add(aTransaction);
-        aTransaction.getFrom().add(aTransaction);
-        aTransaction.getTo().add(aTransaction);
+    public void remove(PlannedTransaction transaction) {
+        plannedTransactions.remove(transaction);
+        transaction.getFrom().remove(transaction);
+        transaction.getTo().remove(transaction);
     }
-
     public void track(Indicator anIndicator) {
         Validate.notNull(anIndicator, "The indicator must not be null");
 

@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="23eee936-564d-4f2b-ba45-3e464a978cf2" name="Default" comment="- Null-Checks only necessary at component border&#10;- Log additional information in error case">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/org/book/account/domain/PlannedTransaction.java" />
-      <change type="DELETED" beforePath="C:\Users\akh\Documents\GitHub\DomainAccount\src\main\java\org\book\account\domain\ContinuousTransaction.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\akh\Documents\GitHub\DomainAccount\src\main\java\org\book\account\domain\NonRecurringTransaction.java" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\akh\Documents\GitHub\DomainAccount\src\main\java\org\book\account\domain\OccurredTransaction.java" afterPath="$PROJECT_DIR$/src/main/java/org/book/account/domain/ExecutedTransaction.java" />
+    <list default="true" id="23eee936-564d-4f2b-ba45-3e464a978cf2" name="Default" comment="Across the domain one has to distinguish whether a transaction is planned or already executed.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/book/account/domain/Account.java" afterPath="$PROJECT_DIR$/src/main/java/org/book/account/domain/Account.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/book/account/domain/AccountSystem.java" afterPath="$PROJECT_DIR$/src/main/java/org/book/account/domain/AccountSystem.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/book/account/domain/Transaction.java" afterPath="$PROJECT_DIR$/src/main/java/org/book/account/domain/Transaction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="DomainAccount.iws" />
@@ -75,9 +70,12 @@
       <file leaf-file-name="AccountSystem.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/AccountSystem.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="493" max-vertical-offset="1343">
-              <caret line="48" column="115" selection-start-line="48" selection-start-column="115" selection-end-line="48" selection-end-column="115" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1411">
+              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+              <folding>
+                <element signature="e#262#282#0" expanded="true" />
+                <element signature="e#367#388#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -85,9 +83,14 @@
       <file leaf-file-name="Account.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/Account.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3319149" vertical-offset="201" max-vertical-offset="969">
-              <caret line="25" column="27" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
-              <folding />
+            <state vertical-scroll-proportion="0.6744681" vertical-offset="23" max-vertical-offset="1003">
+              <caret line="24" column="42" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="42" />
+              <folding>
+                <element signature="e#332#353#0" expanded="true" />
+                <element signature="e#436#456#0" expanded="true" />
+                <element signature="e#1201#1202#0" expanded="true" />
+                <element signature="e#1255#1256#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -107,6 +110,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="969">
               <caret line="43" column="13" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExecutedTransaction.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/ExecutedTransaction.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
+              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -135,13 +148,14 @@
         <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/Indicator.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/book/account/domain/AcceptanceTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/Amount.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/Account.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/AccountHierarchy.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/PlannedTransaction.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/Transaction.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/OccurredTransaction.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/ExecutedTransaction.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/AccountSystem.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/book/account/domain/Account.java" />
       </list>
     </option>
   </component>
@@ -545,7 +559,11 @@
       <created>1397367294927</created>
       <updated>1397367294927</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Across the domain one has to distinguish whether a transaction is planned or already executed.">
+      <created>1397368242279</created>
+      <updated>1397368242279</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -600,7 +618,8 @@
     <MESSAGE value="AccountSystem should provide some means to differentiate instances" />
     <MESSAGE value="correct version" />
     <MESSAGE value="- Null-Checks only necessary at component border&#10;- Log additional information in error case" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Null-Checks only necessary at component border&#10;- Log additional information in error case" />
+    <MESSAGE value="Across the domain one has to distinguish whether a transaction is planned or already executed." />
+    <option name="LAST_COMMIT_MESSAGE" value="Across the domain one has to distinguish whether a transaction is planned or already executed." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1016,14 +1035,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/ExecutedTransaction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34228188" vertical-offset="0" max-vertical-offset="544">
-          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/PlannedTransaction.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="969">
@@ -1032,19 +1043,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/ExecutedTransaction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/AccountSystem.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="493" max-vertical-offset="1343">
-          <caret line="48" column="115" selection-start-line="48" selection-start-column="115" selection-end-line="48" selection-end-column="115" />
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1411">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="e#262#282#0" expanded="true" />
+            <element signature="e#367#388#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/book/account/domain/Account.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3319149" vertical-offset="201" max-vertical-offset="969">
-          <caret line="25" column="27" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
-          <folding />
+        <state vertical-scroll-proportion="0.6744681" vertical-offset="23" max-vertical-offset="1003">
+          <caret line="24" column="42" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="42" />
+          <folding>
+            <element signature="e#332#353#0" expanded="true" />
+            <element signature="e#436#456#0" expanded="true" />
+            <element signature="e#1201#1202#0" expanded="true" />
+            <element signature="e#1255#1256#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
