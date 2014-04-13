@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class PlannedTransaction implements Transaction {
+public class PlannedTransaction implements ITransaction {
     private final Account from;
     private final Account to;
     private final Date startsOn;

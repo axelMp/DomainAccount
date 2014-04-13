@@ -16,7 +16,7 @@ public class Ledger {
     @Column(name = "NAME")
     private final String name;
     @OneToMany
-    private List<ExecutedTransaction> executedTransactions = new LinkedList<ExecutedTransaction>();
+    private List<Transaction> transactions = new LinkedList<Transaction>();
     @OneToMany
     private List<Account> accounts = new LinkedList<Account>();
     @Id
@@ -64,19 +64,19 @@ public class Ledger {
         accounts.remove(account);
     }
 
-    public ExecutedTransaction book(String text, Date occurredOn, Amount amount, Account from, Account to) {
+    public Transaction book(String text, Date occurredOn, Amount amount, Account from, Account to) {
         assertThatAccountExists(from);
         assertThatAccountExists(to);
 
-        ExecutedTransaction newTransaction = new ExecutedTransaction(text, amount, from, to, occurredOn);
-        executedTransactions.add(newTransaction);
+        Transaction newTransaction = new Transaction(text, amount, from, to, occurredOn);
+        transactions.add(newTransaction);
         newTransaction.getDebitor().add(newTransaction);
         newTransaction.getCreditor().add(newTransaction);
         return newTransaction;
     }
 
-    public void remove(ExecutedTransaction transaction) {
-        executedTransactions.remove(transaction);
+    public void remove(Transaction transaction) {
+        transactions.remove(transaction);
         transaction.getDebitor().remove(transaction);
         transaction.getCreditor().remove(transaction);
     }

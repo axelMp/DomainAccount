@@ -15,7 +15,7 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private final AccountType accountType;
     @OneToMany
-    private final List<ExecutedTransaction> executedTransactions = new LinkedList<ExecutedTransaction>();
+    private final List<Transaction> transactions = new LinkedList<Transaction>();
     @OneToMany
     private final List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
     @Id
@@ -32,7 +32,7 @@ public class Account {
 
     public Amount closure(Date date) {
         Amount result = Amount.noAmount();
-        for (ExecutedTransaction aTransaction : executedTransactions) {
+        for (Transaction aTransaction : transactions) {
             if (aTransaction.getDebitor().equals(this)) {
                 result = Amount.subtract(result, aTransaction.valueAt(date));
             } else {
@@ -42,16 +42,16 @@ public class Account {
         return result;
     }
 
-    void add(ExecutedTransaction aTransaction) {
-        executedTransactions.add(aTransaction);
+    void add(Transaction aTransaction) {
+        transactions.add(aTransaction);
     }
 
     void add(PlannedTransaction aTransaction) {
         plannedTransactions.add(aTransaction);
     }
 
-    void remove(ExecutedTransaction aTransaction) {
-        executedTransactions.remove(aTransaction);
+    void remove(Transaction aTransaction) {
+        transactions.remove(aTransaction);
     }
 
     void remove(PlannedTransaction aTransaction) {
