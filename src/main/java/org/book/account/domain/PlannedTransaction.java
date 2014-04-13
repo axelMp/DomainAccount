@@ -2,13 +2,20 @@ package org.book.account.domain;
 
 import org.apache.commons.lang3.Validate;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
+@Entity
 public class PlannedTransaction extends Transaction {
-
     private final Date startsOn;
     private final Date endsOn;
     private final boolean isContinuous;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     PlannedTransaction(String description, Amount amount, Account from, Account to, Date startsOn, Date endsOn, boolean isContinuous) {
         super(description, amount, from, to);

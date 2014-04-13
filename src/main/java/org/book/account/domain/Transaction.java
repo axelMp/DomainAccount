@@ -2,11 +2,19 @@ package org.book.account.domain;
 
 import org.apache.commons.lang3.Validate;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
+@Entity
 public abstract class Transaction {
     private final Account from;
     private final Account to;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String description;
     private Amount amount;
 

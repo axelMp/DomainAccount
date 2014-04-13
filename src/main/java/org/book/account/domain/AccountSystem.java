@@ -2,17 +2,26 @@ package org.book.account.domain;
 
 import org.apache.commons.lang3.Validate;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-
+@Entity
 public class AccountSystem {
+    @OneToMany
     private final List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
+    @OneToMany
     private final List<ExecutedTransaction> executedTransactions = new LinkedList<ExecutedTransaction>();
+    @Column(name = "HIERARCHY")
     private final AccountHierarchy accounts = new AccountHierarchy();
+    // TODO
     private final List<Indicator> indicators = new LinkedList<Indicator>();
+    @Column(name = "NAME")
     private final String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     public AccountSystem(String name) {
         Validate.notNull(name, "The name must not be null");
