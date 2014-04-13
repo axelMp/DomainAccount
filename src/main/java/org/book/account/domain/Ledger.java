@@ -34,6 +34,10 @@ public class Ledger {
         this.name = name;
     }
 
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
     public List<Transaction> getTransactions() {
         return transactions;
     }
