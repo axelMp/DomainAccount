@@ -15,7 +15,7 @@ public class AccountSystem {
     private final List<ExecutedTransaction> executedTransactions = new LinkedList<ExecutedTransaction>();
     @Column(name = "HIERARCHY")
     private final AccountHierarchy accounts = new AccountHierarchy();
-    // TODO
+
     private final List<Indicator> indicators = new LinkedList<Indicator>();
     @Column(name = "NAME")
     private final String name;
