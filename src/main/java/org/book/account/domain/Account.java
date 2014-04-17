@@ -55,9 +55,7 @@ public class Account {
     public enum AccountType {
         INCOME,
         EXPENSE,
-        SHORT_TERM_LIABILITY,
-        LONG_TERM_LIABILITY,
-        SHORT_TERM_ASSET,
-        LONG_TERM_ASSET
+        LIABILITY,
+        ASSET
     }
 }
