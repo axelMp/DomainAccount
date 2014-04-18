@@ -10,7 +10,11 @@ import java.util.List;
 @Entity
 @Table(name = "budget")
 public class Budget {
-    @OneToMany(mappedBy = "id")
+    @OneToMany
+    @JoinTable(
+            name = "planned_transactions",
+            joinColumns = @JoinColumn(name = "id")
+    )
     private List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
     @Id
     @Column(name = "id")
