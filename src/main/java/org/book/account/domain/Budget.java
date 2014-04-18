@@ -32,11 +32,11 @@ public class Budget {
         return plannedTransactions;
     }
 
-    public PlannedTransaction plan(String text, Date startsOn, Date endsOn, Amount amount, Account from, Account to, boolean isContinuous) {
-        ledger.assertThatAccountExists(from);
-        ledger.assertThatAccountExists(to);
+    public PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, boolean isContinuous) {
+        ledger.assertThatAccountExists(debitor);
+        ledger.assertThatAccountExists(creditor);
 
-        PlannedTransaction newTransaction = new PlannedTransaction(text, amount, from, to, startsOn, endsOn, isContinuous);
+        PlannedTransaction newTransaction = new PlannedTransaction(narration, amount, debitor, creditor, startsOn, endsOn, isContinuous);
         plannedTransactions.add(newTransaction);
         return newTransaction;
     }
