@@ -23,9 +23,14 @@ public class Budget {
     public Budget() {
 
     }
+
     public Budget(Ledger associatedLedger) {
         Validate.notNull(associatedLedger, "associatedLedger cannot be null");
         this.ledger = associatedLedger;
+    }
+
+    public Ledger getLedger() {
+        return ledger;
     }
 
     public List<PlannedTransaction> getPlannedTransactions() {
