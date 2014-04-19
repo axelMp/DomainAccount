@@ -120,6 +120,22 @@ public class ForecastServiceTest {
     }
 
     @Test
+    public void continuousTransaction_transactionWithSameNarrationHasBeenBookedInPlannedTime_forecastIgnoresBooking() {
+        Ledger ledger = new Ledger("randomName");
+        Account creditor = Utilities.generateRandomAccount(ledger);
+        Account debitor = Utilities.generateRandomAccount(ledger);
+        Date forecastOn = Utilities.moveDay(20, Utilities.today());
+        ForecastService sut = new ForecastService();
+        Budget budget = new Budget(ledger);
+        Amount randomAmount = Utilities.generateRandomAmountInEuro();
+        Amount anotherRandomAmount = Utilities.generateRandomAmountInEuro();
+        String randomNarration = "aNarration";
+        budget.plan(randomNarration, Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn), randomAmount, creditor, debitor, true);
+        ledger.book(randomNarration, Utilities.today(), anotherRandomAmount, creditor, debitor);
+        Assert.assertEquals(sut.forecastClosure(ledger, debitor, budget, forecastOn), Amount.add(randomAmount, anotherRandomAmount));
+    }
+
+    @Test
     public void nonContinuousTransaction_planStartsBetweenTodayAndForecastAndEndsAfterForecast_forecastIncludesCompleteAmount() {
         Ledger ledger = new Ledger("randomName");
         Account creditor = Utilities.generateRandomAccount(ledger);
