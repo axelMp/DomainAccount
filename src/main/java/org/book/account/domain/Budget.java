@@ -52,8 +52,15 @@ public class Budget {
         return plannedTransactions;
     }
 
+    public PlannedTransaction planLinearlyProgressingTransaction(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor) {
+        return plan(narration, startsOn, endsOn, amount, debitor, creditor, true);
+    }
 
-    public PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, boolean isContinuous) {
+    public PlannedTransaction planSingleTransaction(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor) {
+        return plan(narration, startsOn, endsOn, amount, debitor, creditor, false);
+    }
+
+    private PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, boolean isContinuous) {
         ledger.assertThatAccountExists(debitor);
         ledger.assertThatAccountExists(creditor);
 
