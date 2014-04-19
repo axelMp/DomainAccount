@@ -76,6 +76,20 @@ public class ForecastServiceTest {
     }
 
     @Test
+    public void continuousTransaction_plannedBetweenTodayAndForecast_forecastIncludesCompleteAmount() {
+        Ledger ledger = new Ledger("randomName");
+        Account creditor = Utilities.generateRandomAccount(ledger);
+        Account debitor = Utilities.generateRandomAccount(ledger);
+        Date forecastOn = Utilities.moveDay(20, Utilities.today());
+        ForecastService sut = new ForecastService();
+        Budget budget = new Budget(ledger);
+        Amount randomAmount = Utilities.generateRandomAmountInEuro();
+        budget.plan("aNarration", Utilities.nextDay(Utilities.today()), Utilities.previousDay(forecastOn), randomAmount, creditor, debitor, true);
+
+        Assert.assertEquals(sut.forecastClosure(ledger, debitor, budget, forecastOn), randomAmount);
+    }
+
+    @Test
     public void nonContinuousTransaction_planStartsBeforeTodayAndEndsBetweenTodayAndForecast_forecastIncludesCompleteAmount() {
         Ledger ledger = new Ledger("randomName");
         Account creditor = Utilities.generateRandomAccount(ledger);
