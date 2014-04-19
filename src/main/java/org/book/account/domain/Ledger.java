@@ -47,6 +47,16 @@ public class Ledger {
         return transactions;
     }
 
+    public List<Transaction> getTransactions(Account anAccount) {
+        List<Transaction> result = new LinkedList<>();
+        for (Transaction transaction : getTransactions()) {
+            if (transaction.getCreditor().equals(anAccount) || transaction.getDebitor().equals(anAccount)) {
+                result.add(transaction);
+            }
+        }
+        return result;
+    }
+
     public String getName() {
         return name;
     }
