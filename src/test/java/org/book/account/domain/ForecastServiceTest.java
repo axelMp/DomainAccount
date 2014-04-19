@@ -41,7 +41,6 @@ public class ForecastServiceTest {
         Budget budget = new Budget(ledger);
         Date beforeToday = Utilities.previousDay(Utilities.today());
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount);
-
         budget.plan("aNarration", Utilities.previousDay(beforeToday), beforeToday, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount, true);
 
         Assert.assertEquals(sut.forecastClosure(ledger, anAccount, budget, forecastOn), anAccount.closure(forecastOn));
@@ -57,7 +56,6 @@ public class ForecastServiceTest {
         Budget budget = new Budget(ledger);
         Date afterForeCastDay = Utilities.nextDay(forecastOn);
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount);
-
         budget.plan("aNarration", afterForeCastDay, Utilities.nextDay(afterForeCastDay), Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount, true);
 
         Assert.assertEquals(sut.forecastClosure(ledger, anAccount, budget, forecastOn), anAccount.closure(forecastOn));
@@ -73,7 +71,6 @@ public class ForecastServiceTest {
         Budget budget = new Budget(ledger);
         Date beforeToday = Utilities.previousDay(Utilities.today());
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount);
-
         budget.plan("aNarration", Utilities.previousDay(beforeToday), beforeToday, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount, false);
 
         Assert.assertEquals(sut.forecastClosure(ledger, anAccount, budget, forecastOn), anAccount.closure(forecastOn));
@@ -89,7 +86,6 @@ public class ForecastServiceTest {
         Budget budget = new Budget(ledger);
         Date afterForeCastDay = Utilities.nextDay(forecastOn);
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount);
-
         budget.plan("aNarration", afterForeCastDay, Utilities.nextDay(afterForeCastDay), Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount, false);
 
         Assert.assertEquals(sut.forecastClosure(ledger, anAccount, budget, forecastOn), anAccount.closure(forecastOn));
