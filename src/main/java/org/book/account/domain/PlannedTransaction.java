@@ -48,6 +48,18 @@ public class PlannedTransaction implements ITransaction {
         this.endsOn = endsOn;
     }
 
+    public Date getStartsOn() {
+        return startsOn;
+    }
+
+    public Date getEndsOn() {
+        return endsOn;
+    }
+
+    public boolean isContinuous() {
+        return isContinuous;
+    }
+
     public String getNarration() {
         return narration;
     }
@@ -57,7 +69,7 @@ public class PlannedTransaction implements ITransaction {
         this.narration = narration;
     }
 
-    protected Amount getAmount() {
+    private Amount getAmount() {
         return amount;
     }
 
