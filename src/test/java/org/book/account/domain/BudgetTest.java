@@ -16,6 +16,6 @@ public class BudgetTest {
         Date randomDate = Utilities.today();
         Date dayBeforeRandomDate = Utilities.previousDay(randomDate);
 
-        sut.plan("randomString", randomDate, dayBeforeRandomDate, randomAmount, randomAccount, anotherRandomAccount, true);
+        sut.planLinearlyProgressingTransaction("randomString", randomDate, dayBeforeRandomDate, randomAmount, randomAccount, anotherRandomAccount);
     }
 }
