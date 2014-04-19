@@ -9,18 +9,18 @@ public class ForecastService {
     public Amount forecastClosure(Ledger aLedger, Account anAccount, Budget plan, Date forecastOn) {
         List<PlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
-        removeNonContinuousPlansWithMatchingTransaction(plannedTransactions, aLedger.getTransactions(anAccount));
+        removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, aLedger.getTransactions(anAccount));
         Date today = new Date();
         Amount currentClosure = anAccount.closure(today);
         Amount expectedClosure = sumPlannedTransactions(plannedTransactions, anAccount, forecastOn);
         return Amount.add(currentClosure, expectedClosure);
     }
 
-    private void removeNonContinuousPlansWithMatchingTransaction(List<PlannedTransaction> plannedTransactions, List<Transaction> transactions) {
+    private void removeSingledPlannedTransactionsWithMatchingTransaction(List<PlannedTransaction> plannedTransactions, List<Transaction> transactions) {
         ListIterator<PlannedTransaction> iterator = plannedTransactions.listIterator();
         while (iterator.hasNext()) {
             PlannedTransaction plannedTransaction = iterator.next();
-            if (plannedTransaction.isContinuous()) {
+            if (!plannedTransaction.getExecution().equals(PlannedTransaction.Execution.SINGLE)) {
                 continue;
             }
             boolean matchingTransactionFound = false;
@@ -57,7 +57,7 @@ public class ForecastService {
         Date today = new Date();
         for (PlannedTransaction plannedTransaction : plan) {
             Amount forecastOfPlannedTransaction = plannedTransaction.forecast(forecastOn);
-            if (plannedTransaction.isContinuous()) {
+            if (plannedTransaction.getExecution().equals(PlannedTransaction.Execution.LINEARLY_PROGRESSING)) {
                 forecastOfPlannedTransaction = Amount.subtract(forecastOfPlannedTransaction, plannedTransaction.forecast(today));
             }
             if (anAccount.equals(plannedTransaction.getCreditor())) {

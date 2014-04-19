@@ -53,18 +53,18 @@ public class Budget {
     }
 
     public PlannedTransaction planLinearlyProgressingTransaction(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor) {
-        return plan(narration, startsOn, endsOn, amount, debitor, creditor, true);
+        return plan(narration, startsOn, endsOn, amount, debitor, creditor, PlannedTransaction.Execution.LINEARLY_PROGRESSING);
     }
 
     public PlannedTransaction planSingleTransaction(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor) {
-        return plan(narration, startsOn, endsOn, amount, debitor, creditor, false);
+        return plan(narration, startsOn, endsOn, amount, debitor, creditor, PlannedTransaction.Execution.SINGLE);
     }
 
-    private PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, boolean isContinuous) {
+    private PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, PlannedTransaction.Execution execution) {
         ledger.assertThatAccountExists(debitor);
         ledger.assertThatAccountExists(creditor);
 
-        PlannedTransaction newTransaction = new PlannedTransaction(narration, amount, debitor, creditor, startsOn, endsOn, isContinuous);
+        PlannedTransaction newTransaction = new PlannedTransaction(narration, amount, debitor, creditor, startsOn, endsOn, execution);
         plannedTransactions.add(newTransaction);
         return newTransaction;
     }

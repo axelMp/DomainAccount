@@ -16,19 +16,21 @@ public class PlannedTransaction implements ITransaction {
     private Account creditor;
     private Date startsOn;
     private Date endsOn;
-    private boolean isContinuous;
     private String narration;
     private Amount amount;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name = "EXECUTION")
+    @Enumerated(EnumType.STRING)
+    private Execution execution;
 
     // required by hibernate
     public PlannedTransaction() {
 
     }
 
-    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Date startsOn, Date endsOn, boolean isContinuous) {
+    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Date startsOn, Date endsOn, Execution execution) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(creditor, "The creditor account must not be null");
 
@@ -43,9 +45,13 @@ public class PlannedTransaction implements ITransaction {
             throw new IllegalArgumentException("planned transaction should have a start date before the given end date");
         }
 
-        this.isContinuous = isContinuous;
+        this.execution = execution;
         this.startsOn = startsOn;
         this.endsOn = endsOn;
+    }
+
+    public Execution getExecution() {
+        return execution;
     }
 
     public Date getStartsOn() {
@@ -54,10 +60,6 @@ public class PlannedTransaction implements ITransaction {
 
     public Date getEndsOn() {
         return endsOn;
-    }
-
-    public boolean isContinuous() {
-        return isContinuous;
     }
 
     public String getNarration() {
@@ -86,29 +88,45 @@ public class PlannedTransaction implements ITransaction {
         return creditor;
     }
 
+    private Amount forecastSingle(Date date) {
+        if (date.after(startsOn)) {
+            return getAmount();
+        } else {
+            return Amount.noAmount();
+        }
+    }
+
+    private Amount forecastLinearlyProgressing(Date date) {
+        if (date.after(endsOn)) {
+            return getAmount();
+        } else if (date.before(startsOn)) {
+            return Amount.noAmount();
+        } else if (startsOn.getTime() == endsOn.getTime()) {
+            return getAmount();
+        } else {
+            double durationTransaction = endsOn.getTime() - startsOn.getTime();
+            double durationTillDate = date.getTime() - startsOn.getTime();
+            double percentage = durationTillDate / durationTransaction;
+            Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
+            return new Amount(partialAmount, getAmount().getCurrency());
+        }
+    }
+
     public Amount forecast(Date date) {
         Validate.notNull(date, "The date must not be null");
 
-        if (isContinuous) {
-            if (date.after(endsOn)) {
-                return getAmount();
-            } else if (date.before(startsOn)) {
-                return Amount.noAmount();
-            } else if (startsOn.getTime() == endsOn.getTime()) {
-                return getAmount();
-            } else {
-                double durationTransaction = endsOn.getTime() - startsOn.getTime();
-                double durationTillDate = date.getTime() - startsOn.getTime();
-                double percentage = durationTillDate / durationTransaction;
-                Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
-                return new Amount(partialAmount, getAmount().getCurrency());
-            }
-        } else {
-            if (date.after(startsOn)) {
-                return getAmount();
-            } else {
-                return Amount.noAmount();
-            }
+        switch (execution) {
+            case SINGLE:
+                return forecastSingle(date);
+            case LINEARLY_PROGRESSING:
+                return forecastLinearlyProgressing(date);
+            default:
+                throw new IllegalArgumentException("cannot forecast for execution type " + execution.toString());
         }
+    }
+
+    public enum Execution {
+        SINGLE,
+        LINEARLY_PROGRESSING
     }
 }
