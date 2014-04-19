@@ -6,6 +6,15 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class ForecastService {
+    /**
+     * Forecasts closure of account based on currently known and planned transactions
+     *
+     * @param aLedger    ledger which contains the account
+     * @param anAccount  account for which to forecast
+     * @param plan       plan which transactions are probably going to take place
+     * @param forecastOn forecast date
+     * @return forecast amount for given account
+     */
     public Amount forecastClosure(Ledger aLedger, Account anAccount, Budget plan, Date forecastOn) {
         List<PlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
@@ -14,6 +23,13 @@ public class ForecastService {
         Amount currentClosure = anAccount.closure(today);
         Amount expectedClosure = sumPlannedTransactions(plannedTransactions, anAccount, forecastOn);
         return Amount.add(currentClosure, expectedClosure);
+    }
+
+    private boolean matches(PlannedTransaction plannedTransaction, Transaction transaction) {
+        boolean identicalNarration = transaction.getNarration().equals(plannedTransaction.getNarration());
+        boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(plannedTransaction.getStartsOn());
+        boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(plannedTransaction.getEndsOn());
+        return identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
     }
 
     private void removeSingledPlannedTransactionsWithMatchingTransaction(List<PlannedTransaction> plannedTransactions, List<Transaction> transactions) {
@@ -25,10 +41,7 @@ public class ForecastService {
             }
             boolean matchingTransactionFound = false;
             for (Transaction transaction : transactions) {
-                boolean identicalNarration = transaction.getNarration().equals(plannedTransaction.getNarration());
-                boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(plannedTransaction.getStartsOn());
-                boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(plannedTransaction.getEndsOn());
-                if (identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn) {
+                if (matches(plannedTransaction,transaction)) {
                     matchingTransactionFound = true;
                 }
             }
