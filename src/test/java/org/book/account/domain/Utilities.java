@@ -6,16 +6,17 @@ import java.util.UUID;
 
 public class Utilities {
     static Date previousDay(Date aDate) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(aDate);
-        cal.add(Calendar.DAY_OF_YEAR, -1);
-        return cal.getTime();
+        return moveDay(-1, aDate);
     }
 
     static Date nextDay(Date aDate) {
+        return moveDay(1, aDate);
+    }
+
+    static Date moveDay(int daysToMove, Date aDate) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(aDate);
-        cal.add(Calendar.DAY_OF_YEAR, +1);
+        cal.add(Calendar.DAY_OF_YEAR, daysToMove);
         return cal.getTime();
     }
 
