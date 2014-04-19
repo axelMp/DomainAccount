@@ -1,28 +1,35 @@
 package org.book.account.domain;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.Date;
 
-public class AccountClosureThresholdPerformanceIndicator extends Indicator<Amount> {
+public class AccountClosureThresholdPerformanceIndicator {
 
-    public AccountClosureThresholdPerformanceIndicator(String name,Amount threshold,Account account,Date validUntil,boolean reachThresholdEveryDay) {
-        super(name);
+    private String name;
+    private Account account;
+    private Amount threshold;
+    private Date validUntil;
+    private boolean reachThresholdEveryDay;
 
-        if ( null == threshold ) {
-            throw new IllegalArgumentException("threshold cannot be null");
-        }
+    public AccountClosureThresholdPerformanceIndicator() {
+    }
+
+    public AccountClosureThresholdPerformanceIndicator(String name, Amount threshold, Account account, Date validUntil, boolean reachThresholdEveryDay) {
+        Validate.notNull(name, "The name must not be null");
+        Validate.notNull(threshold, "threshold cannot be null");
+        Validate.notNull(account, "account cannot be null");
+        Validate.notNull(validUntil, "validUntil cannot be null");
+
+        this.name = name;
         this.threshold = threshold;
-
-        if ( null == validUntil ) {
-            throw new IllegalArgumentException("validUntil cannot be null");
-        }
         this.validUntil = validUntil;
-
-        if ( null == account ) {
-            throw new IllegalArgumentException("account cannot be null");
-        }
         this.account = account;
-
         this.reachThresholdEveryDay = reachThresholdEveryDay;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Amount indicatorValueAt(Date aDate) {
@@ -30,7 +37,7 @@ public class AccountClosureThresholdPerformanceIndicator extends Indicator<Amoun
     }
 
     public Amount expectedValueAt(Date aDate) {
-        if ( reachThresholdEveryDay ) {
+        if (reachThresholdEveryDay) {
             return threshold;
         } else if (aDate.equals(validUntil)) {
             return threshold;
@@ -38,9 +45,4 @@ public class AccountClosureThresholdPerformanceIndicator extends Indicator<Amoun
             return Amount.noAmount();
         }
     }
-
-    private final Account account;
-    private final Amount threshold;
-    private final Date validUntil;
-    private final boolean reachThresholdEveryDay;
 }
