@@ -13,7 +13,8 @@ public class ForecastServiceTest {
         Account anAccount = ledger.createAccount(anAccountName, Account.AccountType.ASSET);
         Date dateOfClosure = new Date();
         ForecastService sut = new ForecastService();
+        Budget plan = new Budget(ledger);
 
-        Assert.assertEquals(sut.forecastClosure(ledger, anAccount, dateOfClosure), Amount.noAmount());
+        Assert.assertEquals(sut.forecastClosure(ledger, anAccount, plan, dateOfClosure), Amount.noAmount());
     }
 }
