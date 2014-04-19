@@ -44,7 +44,7 @@ public class AccountTest {
         Account anotherAccount = ledger.createAccount(anotherAccountName, Account.AccountType.INCOME);
 
         ledger.book("aNarration", randomDay, randomAmount, anAccount, anotherAccount);
-        Assert.assertEquals(anAccount.closure(DateUtilities.previousDay(randomDay)), Amount.noAmount());
+        Assert.assertEquals(anAccount.closure(Utilities.previousDay(randomDay)), Amount.noAmount());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AccountTest {
         final String anAccountName = "anAccountName";
         final String anotherAccountName = "anotherAccountName";
         Date randomDay = new Date();
-        Date dayOfTransaction = DateUtilities.previousDay(randomDay);
+        Date dayOfTransaction = Utilities.previousDay(randomDay);
         Date dayOfClosure = randomDay;
         int randomCents = 3849;
         Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
