@@ -104,6 +104,24 @@ public class ForecastServiceTest {
     }
 
     @Test
+    public void continuousTransaction_planStartsBeforeTodayAndEndsBetweenTodayAndForecast_forecastIncludesPartialAmount() {
+        Ledger ledger = new Ledger("randomName");
+        Account creditor = Utilities.generateRandomAccount(ledger);
+        Account debitor = Utilities.generateRandomAccount(ledger);
+        Date forecastOn = Utilities.moveDay(10, Utilities.today());
+        Date planStartsOn = Utilities.moveDay(-20, forecastOn);
+        Date planEndsOn = forecastOn;
+
+        ForecastService sut = new ForecastService();
+        Budget budget = new Budget(ledger);
+        Amount randomAmount = Utilities.generateRandomAmountInEuro();
+        Amount halfOfRandomAmount = new Amount(randomAmount.getCents() / 2, randomAmount.getCurrency());
+        budget.plan("aNarration", planStartsOn, planEndsOn, randomAmount, creditor, debitor, true);
+
+        Assert.assertEquals(sut.forecastClosure(ledger, debitor, budget, forecastOn), halfOfRandomAmount);
+    }
+
+    @Test
     public void nonContinuousTransaction_transactionWithSameNarrationHasBeenBookedInPlannedTime_forecastIgnoresPlannedTransaction() {
         Ledger ledger = new Ledger("randomName");
         Account creditor = Utilities.generateRandomAccount(ledger);
@@ -124,15 +142,18 @@ public class ForecastServiceTest {
         Ledger ledger = new Ledger("randomName");
         Account creditor = Utilities.generateRandomAccount(ledger);
         Account debitor = Utilities.generateRandomAccount(ledger);
-        Date forecastOn = Utilities.moveDay(20, Utilities.today());
+        Date forecastOn = Utilities.moveDay(10, Utilities.today());
+        Date planStartsOn = Utilities.moveDay(-20, forecastOn);
+        Date planEndsOn = forecastOn;
         ForecastService sut = new ForecastService();
         Budget budget = new Budget(ledger);
-        Amount randomAmount = Utilities.generateRandomAmountInEuro();
-        Amount anotherRandomAmount = Utilities.generateRandomAmountInEuro();
+        Amount plannedAmount = Utilities.generateRandomAmountInEuro();
+        Amount bookedAmount = Utilities.generateRandomAmountInEuro();
+        Amount halfPlannedAmount = new Amount(plannedAmount.getCents() / 2, plannedAmount.getCurrency());
         String randomNarration = "aNarration";
-        budget.plan(randomNarration, Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn), randomAmount, creditor, debitor, true);
-        ledger.book(randomNarration, Utilities.today(), anotherRandomAmount, creditor, debitor);
-        Assert.assertEquals(sut.forecastClosure(ledger, debitor, budget, forecastOn), Amount.add(randomAmount, anotherRandomAmount));
+        budget.plan(randomNarration, planStartsOn, planEndsOn, plannedAmount, creditor, debitor, true);
+        ledger.book(randomNarration, Utilities.moveDay(1, planStartsOn), bookedAmount, creditor, debitor);
+        Assert.assertEquals(sut.forecastClosure(ledger, debitor, budget, forecastOn), Amount.add(halfPlannedAmount, bookedAmount));
     }
 
     @Test

@@ -54,11 +54,16 @@ public class ForecastService {
 
     private Amount sumPlannedTransactions(List<PlannedTransaction> plan, Account anAccount, Date forecastOn) {
         Amount sum = Amount.noAmount();
+        Date today = new Date();
         for (PlannedTransaction plannedTransaction : plan) {
+            Amount forecastOfPlannedTransaction = plannedTransaction.valueAt(forecastOn);
+            if (plannedTransaction.isContinuous()) {
+                forecastOfPlannedTransaction = Amount.subtract(forecastOfPlannedTransaction, plannedTransaction.valueAt(today));
+            }
             if (anAccount.equals(plannedTransaction.getCreditor())) {
-                sum = Amount.add(sum, plannedTransaction.valueAt(forecastOn));
+                sum = Amount.add(sum, forecastOfPlannedTransaction);
             } else {
-                sum = Amount.subtract(sum, plannedTransaction.valueAt(forecastOn));
+                sum = Amount.subtract(sum, forecastOfPlannedTransaction);
             }
         }
         return sum;
