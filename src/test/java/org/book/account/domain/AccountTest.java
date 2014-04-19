@@ -3,7 +3,6 @@ package org.book.account.domain;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class AccountTest {
@@ -45,7 +44,7 @@ public class AccountTest {
         Account anotherAccount = ledger.createAccount(anotherAccountName, Account.AccountType.INCOME);
 
         ledger.book("aNarration", randomDay, randomAmount, anAccount, anotherAccount);
-        Assert.assertEquals(anAccount.closure(previousDay(randomDay)), Amount.noAmount());
+        Assert.assertEquals(anAccount.closure(DateUtilities.previousDay(randomDay)), Amount.noAmount());
     }
 
     @Test
@@ -54,7 +53,7 @@ public class AccountTest {
         final String anAccountName = "anAccountName";
         final String anotherAccountName = "anotherAccountName";
         Date randomDay = new Date();
-        Date dayOfTransaction = previousDay(randomDay);
+        Date dayOfTransaction = DateUtilities.previousDay(randomDay);
         Date dayOfClosure = randomDay;
         int randomCents = 3849;
         Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
@@ -66,10 +65,5 @@ public class AccountTest {
         Assert.assertEquals(anAccount.closure(dayOfClosure), negativeRandomAmount);
     }
 
-    private Date previousDay(Date aDate) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(aDate);
-        cal.add(Calendar.DAY_OF_YEAR, -1);
-        return cal.getTime();
-    }
+
 }
