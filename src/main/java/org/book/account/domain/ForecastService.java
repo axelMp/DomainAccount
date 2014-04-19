@@ -2,13 +2,12 @@ package org.book.account.domain;
 
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
 public class ForecastService {
     public Amount forecastClosure(Ledger aLedger, Account anAccount, Budget plan, Date forecastOn) {
-        List<PlannedTransaction> plannedTransactions = findPlannedTransactionsForAccount(plan, anAccount);
+        List<PlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
         removeNonContinuousPlansWithMatchingTransaction(plannedTransactions, aLedger.getTransactions(anAccount));
         Date today = new Date();
@@ -51,17 +50,6 @@ public class ForecastService {
                 iterator.remove();
             }
         }
-    }
-
-    private List<PlannedTransaction> findPlannedTransactionsForAccount(Budget plan, Account anAccount) {
-        List<PlannedTransaction> plannedTransactions = new LinkedList<>();
-        for (PlannedTransaction plannedTransaction : plan.getPlannedTransactions()) {
-            if (anAccount.equals(plannedTransaction.getCreditor()) || anAccount.equals(plannedTransaction.getDebitor())) {
-                plannedTransactions.add(plannedTransaction);
-            }
-        }
-
-        return plannedTransactions;
     }
 
     private Amount sumPlannedTransactions(List<PlannedTransaction> plan, Account anAccount, Date forecastOn) {

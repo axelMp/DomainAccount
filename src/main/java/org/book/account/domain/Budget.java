@@ -41,6 +41,18 @@ public class Budget {
         return plannedTransactions;
     }
 
+    public List<PlannedTransaction> getPlannedTransactions(Account anAccount) {
+        List<PlannedTransaction> plannedTransactions = new LinkedList<>();
+        for (PlannedTransaction plannedTransaction : getPlannedTransactions()) {
+            if (anAccount.equals(plannedTransaction.getCreditor()) || anAccount.equals(plannedTransaction.getDebitor())) {
+                plannedTransactions.add(plannedTransaction);
+            }
+        }
+
+        return plannedTransactions;
+    }
+
+
     public PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, boolean isContinuous) {
         ledger.assertThatAccountExists(debitor);
         ledger.assertThatAccountExists(creditor);
