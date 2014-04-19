@@ -86,7 +86,7 @@ public class PlannedTransaction implements ITransaction {
         return creditor;
     }
 
-    public Amount valueAt(Date date) {
+    public Amount forecast(Date date) {
         Validate.notNull(date, "The date must not be null");
 
         if (isContinuous) {
