@@ -2,11 +2,19 @@ package org.book.account.domain;
 
 import org.apache.commons.lang3.Validate;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 public class AccountClosureThresholdPerformanceIndicator {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "id")
     private Account account;
     private Amount threshold;
     private Date validUntil;

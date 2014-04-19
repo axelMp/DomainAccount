@@ -1,0 +1,1 @@
+I'm currently reading Domain-Driven Design by Eric Evans. This project serves as a playground to test his ideas and patterns.
