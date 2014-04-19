@@ -171,6 +171,24 @@ public class ForecastServiceTest {
     }
 
     @Test
+    public void continuousTransaction_planStartsBetweenTodayAndForecastAndEndsAfterForecast_forecastIncludesPartialAmount() {
+        Ledger ledger = new Ledger("randomName");
+        Account creditor = Utilities.generateRandomAccount(ledger);
+        Account debitor = Utilities.generateRandomAccount(ledger);
+        Date forecastOn = Utilities.moveDay(10, Utilities.today());
+        Date planStartsOn = Utilities.moveDay(-5, forecastOn);
+        Date planEndsOn = Utilities.moveDay(10, planStartsOn);
+        ForecastService sut = new ForecastService();
+        Budget budget = new Budget(ledger);
+        Amount randomAmount = new Amount(2000, Amount.Currency.EUR);
+        Amount halfRandomAmount = new Amount(randomAmount.getCents() / 2, randomAmount.getCurrency());
+
+        budget.plan("aNarration", planStartsOn, planEndsOn, randomAmount, creditor, debitor, true);
+
+        Assert.assertEquals(sut.forecastClosure(ledger, debitor, budget, forecastOn), halfRandomAmount);
+    }
+
+    @Test
     public void ignoresPlannedNonContinuousTransactionWithEndDateBeforeNow() {
         Ledger ledger = new Ledger("randomName");
         Account creditor = Utilities.generateRandomAccount(ledger);
