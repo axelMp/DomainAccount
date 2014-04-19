@@ -67,6 +67,11 @@ public class Amount {
         return getCents();
     }
 
+    @Override
+    public String toString() {
+        return getCents().toString() + getCurrency().toString();
+    }
+
     public enum Currency {
         EUR,
         USD
