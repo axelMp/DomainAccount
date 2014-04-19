@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "closure_threshold_performance_indicators")
 public class AccountClosureThresholdPerformanceIndicator {
     @Id
     @Column(name = "id")
@@ -14,26 +15,35 @@ public class AccountClosureThresholdPerformanceIndicator {
 
     private String name;
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "account_id")
     private Account account;
     private Amount threshold;
     private Date validUntil;
     private boolean reachThresholdEveryDay;
+    @ManyToOne
+    @JoinColumn(name = "ledger_id")
+    private Ledger ledger;
 
     public AccountClosureThresholdPerformanceIndicator() {
     }
 
-    public AccountClosureThresholdPerformanceIndicator(String name, Amount threshold, Account account, Date validUntil, boolean reachThresholdEveryDay) {
+    public AccountClosureThresholdPerformanceIndicator(Ledger ledger, String name, Amount threshold, Account account, Date validUntil, boolean reachThresholdEveryDay) {
         Validate.notNull(name, "The name must not be null");
         Validate.notNull(threshold, "threshold cannot be null");
         Validate.notNull(account, "account cannot be null");
         Validate.notNull(validUntil, "validUntil cannot be null");
+        Validate.notNull(ledger, "ledger cannot be null");
 
+        this.ledger = ledger;
         this.name = name;
         this.threshold = threshold;
         this.validUntil = validUntil;
         this.account = account;
         this.reachThresholdEveryDay = reachThresholdEveryDay;
+    }
+
+    public Ledger getLedger() {
+        return ledger;
     }
 
     public String getName() {
