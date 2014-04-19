@@ -38,11 +38,28 @@ public class ForecastServiceTest {
         Account anotherAccount = Utilities.generateRandomAccount(ledger);
         Date forecastOn = Utilities.today();
         ForecastService sut = new ForecastService();
-        Budget plan = new Budget(ledger);
+        Budget budget = new Budget(ledger);
+        Date beforeToday = Utilities.previousDay(Utilities.today());
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount);
 
-        Assert.assertEquals(sut.forecastClosure(ledger, anAccount, plan, forecastOn), anAccount.closure(forecastOn));
+        budget.plan("aNarration", Utilities.previousDay(beforeToday), beforeToday, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount, true);
+
+        Assert.assertEquals(sut.forecastClosure(ledger, anAccount, budget, forecastOn), anAccount.closure(forecastOn));
     }
 
+    @Test
+    public void forecastIgnoresPlannedNonContinuousTransactionWithEndDateBeforeNow() {
+        Ledger ledger = new Ledger("randomName");
+        Account anAccount = Utilities.generateRandomAccount(ledger);
+        Account anotherAccount = Utilities.generateRandomAccount(ledger);
+        Date forecastOn = Utilities.today();
+        ForecastService sut = new ForecastService();
+        Budget budget = new Budget(ledger);
+        Date beforeToday = Utilities.previousDay(Utilities.today());
+        ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount);
 
+        budget.plan("aNarration", Utilities.previousDay(beforeToday), beforeToday, Utilities.generateRandomAmountInEuro(), anAccount, anotherAccount, false);
+
+        Assert.assertEquals(sut.forecastClosure(ledger, anAccount, budget, forecastOn), anAccount.closure(forecastOn));
+    }
 }
