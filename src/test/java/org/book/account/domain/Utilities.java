@@ -12,6 +12,13 @@ public class Utilities {
         return cal.getTime();
     }
 
+    static Date nextDay(Date aDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(aDate);
+        cal.add(Calendar.DAY_OF_YEAR, +1);
+        return cal.getTime();
+    }
+
     static Date today() {
         return new Date();
     }
