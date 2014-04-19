@@ -28,14 +28,14 @@ public class PlannedTransaction implements ITransaction {
 
     }
 
-    PlannedTransaction(String narration, Amount amount, Account debitor, Account to, Date startsOn, Date endsOn, boolean isContinuous) {
+    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Date startsOn, Date endsOn, boolean isContinuous) {
         Validate.notNull(debitor, "The debitor account must not be null");
-        Validate.notNull(to, "The to account must not be null");
+        Validate.notNull(creditor, "The creditor account must not be null");
 
         setNarration(narration);
         setAmount(amount);
         this.debitor = debitor;
-        this.creditor = to;
+        this.creditor = creditor;
 
         Validate.notNull(startsOn, "The startsOn date must not be null");
         Validate.notNull(endsOn, "The endsOn on must not be null");
