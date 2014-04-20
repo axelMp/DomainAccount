@@ -1,7 +1,10 @@
 package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
-import org.book.account.domain.*;
+import org.book.account.domain.Amount;
+import org.book.account.domain.ExecutionOfPlannedTransaction;
+import org.book.account.domain.IBudget;
+import org.book.account.domain.IPlannedTransaction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,17 +43,6 @@ public class Budget implements IBudget {
 
     public List<IPlannedTransaction> getPlannedTransactions() {
         return new LinkedList<IPlannedTransaction>(plannedTransactions);
-    }
-
-    public List<IPlannedTransaction> getPlannedTransactions(IAccount anAccount) {
-        List<IPlannedTransaction> plannedTransactions = new LinkedList<IPlannedTransaction>();
-        for (IPlannedTransaction plannedTransaction : getPlannedTransactions()) {
-            if (anAccount.equals(plannedTransaction.getCreditor()) || anAccount.equals(plannedTransaction.getDebitor())) {
-                plannedTransactions.add(plannedTransaction);
-            }
-        }
-
-        return plannedTransactions;
     }
 
     public PlannedTransaction planLinearlyProgressingTransaction(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor) {

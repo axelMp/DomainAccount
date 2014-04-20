@@ -9,12 +9,11 @@ public class ForecastService {
      * Forecasts closure of account based on currently known and planned transactions
      *
      * @param anAccount  account for which to forecast
-     * @param plan       plan which transactions are probably going to take place
      * @param forecastOn forecast date
      * @return forecast amount for given account
      */
-    public Amount forecastClosure(IAccount anAccount, IBudget plan, Date forecastOn) {
-        List<IPlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
+    public Amount forecastClosure(IAccount anAccount, Date forecastOn) {
+        List<IPlannedTransaction> plannedTransactions = anAccount.getPlannedTransactions();
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
         removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, anAccount.getTransactions());
         Date today = new Date();

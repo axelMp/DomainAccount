@@ -1,9 +1,6 @@
 package org.book.account.core;
 
-import org.book.account.domain.AccountType;
-import org.book.account.domain.Amount;
-import org.book.account.domain.IAccount;
-import org.book.account.domain.ITransaction;
+import org.book.account.domain.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,6 +37,17 @@ public class Account implements IAccount {
         this.accountType = accountType;
         this.ledger = ledger;
         this.budget = budget;
+    }
+
+    public List<IPlannedTransaction> getPlannedTransactions() {
+        List<IPlannedTransaction> plannedTransactions = new LinkedList<IPlannedTransaction>();
+        for (IPlannedTransaction plannedTransaction : budget.getPlannedTransactions()) {
+            if (this.equals(plannedTransaction.getCreditor()) || this.equals(plannedTransaction.getDebitor())) {
+                plannedTransactions.add(plannedTransaction);
+            }
+        }
+
+        return plannedTransactions;
     }
 
     public Amount closure(Date date) {
