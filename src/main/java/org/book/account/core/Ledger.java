@@ -1,8 +1,9 @@
-package org.book.account.domain;
+package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.book.account.domain.ILedger;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "ledger")
-public class Ledger {
+public class Ledger implements ILedger {
 
     private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
     @Column(name = "NAME")
@@ -48,7 +49,7 @@ public class Ledger {
     }
 
     public List<Transaction> getTransactions(Account anAccount) {
-        List<Transaction> result = new LinkedList<>();
+        List<Transaction> result = new LinkedList<Transaction>();
         for (Transaction transaction : getTransactions()) {
             if (transaction.getCreditor().equals(anAccount) || transaction.getDebitor().equals(anAccount)) {
                 result.add(transaction);

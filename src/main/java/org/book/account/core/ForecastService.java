@@ -1,4 +1,4 @@
-package org.book.account.domain;
+package org.book.account.core;
 
 
 import java.util.Date;
@@ -41,7 +41,7 @@ public class ForecastService {
             }
             boolean matchingTransactionFound = false;
             for (Transaction transaction : transactions) {
-                if (matches(plannedTransaction,transaction)) {
+                if (matches(plannedTransaction, transaction)) {
                     matchingTransactionFound = true;
                 }
             }

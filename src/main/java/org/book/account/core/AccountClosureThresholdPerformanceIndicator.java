@@ -1,4 +1,4 @@
-package org.book.account.domain;
+package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
 
