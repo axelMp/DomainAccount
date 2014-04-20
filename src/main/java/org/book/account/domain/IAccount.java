@@ -12,5 +12,13 @@ public interface IAccount {
 
     String getName();
 
+    /**
+     * Forecasts closure of account based on currently known and planned transactions
+     *
+     * @param forecastOn forecast date
+     * @return forecast amount for given account
+     */
+    Amount forecast(Date forecastOn);
+
     List<IPlannedTransaction> getPlannedTransactions();
 }

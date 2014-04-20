@@ -1,18 +1,13 @@
-package org.book.account.domain;
+package org.book.account.core;
+
+import org.book.account.domain.*;
 
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
-public class ForecastService {
-    /**
-     * Forecasts closure of account based on currently known and planned transactions
-     *
-     * @param anAccount  account for which to forecast
-     * @param forecastOn forecast date
-     * @return forecast amount for given account
-     */
-    public Amount forecastClosure(IAccount anAccount, Date forecastOn) {
+class ForecastService {
+    Amount forecastClosure(IAccount anAccount, Date forecastOn) {
         List<IPlannedTransaction> plannedTransactions = anAccount.getPlannedTransactions();
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
         removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, anAccount.getTransactions());

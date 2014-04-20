@@ -1,5 +1,6 @@
 package org.book.account.core;
 
+import org.apache.commons.lang3.Validate;
 import org.book.account.domain.*;
 
 import javax.persistence.*;
@@ -48,6 +49,12 @@ public class Account implements IAccount {
         }
 
         return plannedTransactions;
+    }
+
+    public Amount forecast(Date forecastOn) {
+        Validate.notNull(forecastOn, "forecastOn cannot be null");
+        ForecastService forecastService = new ForecastService();
+        return forecastService.forecastClosure(this, forecastOn);
     }
 
     public Amount closure(Date date) {

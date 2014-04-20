@@ -1,7 +1,6 @@
 package org.book.account.core;
 
 import org.book.account.domain.Amount;
-import org.book.account.domain.ForecastService;
 import org.junit.Assert;
 import org.junit.Test;
 
