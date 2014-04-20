@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "budget")
 public class Budget implements IBudget {
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "planned_transactions",
             joinColumns = @JoinColumn(name = "id")
