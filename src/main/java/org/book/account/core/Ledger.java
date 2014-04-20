@@ -65,7 +65,7 @@ public class Ledger implements ILedger {
                 throw new IllegalArgumentException("account with name " + name + " already exists");
             }
         }
-        Account newAccount = new Account(name, accountType, this, budget);
+        Account newAccount = new Account(name, accountType, this);
         accounts.add(newAccount);
         return newAccount;
     }

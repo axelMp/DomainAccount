@@ -14,15 +14,9 @@ public class Account implements IAccount {
     private String name;
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
-
     @ManyToOne
     @JoinColumn(name = "ledger_id")
     private Ledger ledger;
-
-    @ManyToOne
-    @JoinColumn(name = "budget_id")
-    private Budget budget;
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,16 +27,19 @@ public class Account implements IAccount {
 
     }
 
-    Account(String name, AccountType accountType, Ledger ledger, Budget budget) {
+    Account(String name, AccountType accountType, Ledger ledger) {
         this.name = name;
         this.accountType = accountType;
         this.ledger = ledger;
-        this.budget = budget;
+    }
+
+    public Ledger getLedger() {
+        return ledger;
     }
 
     public List<IPlannedTransaction> getPlannedTransactions() {
         List<IPlannedTransaction> plannedTransactions = new LinkedList<IPlannedTransaction>();
-        for (IPlannedTransaction plannedTransaction : budget.getPlannedTransactions()) {
+        for (IPlannedTransaction plannedTransaction : getLedger().getBudget().getPlannedTransactions()) {
             if (this.equals(plannedTransaction.getCreditor()) || this.equals(plannedTransaction.getDebitor())) {
                 plannedTransactions.add(plannedTransaction);
             }
