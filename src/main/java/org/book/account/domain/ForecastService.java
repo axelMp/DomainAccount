@@ -17,7 +17,7 @@ public class ForecastService {
     public Amount forecastClosure(ILedger aLedger, IAccount anAccount, IBudget plan, Date forecastOn) {
         List<IPlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
-        removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, aLedger.getTransactions(anAccount));
+        removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, anAccount.getTransactions());
         Date today = new Date();
         Amount currentClosure = anAccount.closure(today);
         Amount expectedClosure = sumPlannedTransactions(plannedTransactions, anAccount, forecastOn);

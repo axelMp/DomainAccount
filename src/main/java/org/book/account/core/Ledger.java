@@ -55,16 +55,6 @@ public class Ledger implements ILedger {
         return new LinkedList<ITransaction>(transactions);
     }
 
-    public List<ITransaction> getTransactions(IAccount anAccount) {
-        List<ITransaction> result = new LinkedList<ITransaction>();
-        for (ITransaction transaction : getTransactions()) {
-            if (transaction.getCreditor().equals(anAccount) || transaction.getDebitor().equals(anAccount)) {
-                result.add(transaction);
-            }
-        }
-        return result;
-    }
-
     public String getName() {
         return name;
     }

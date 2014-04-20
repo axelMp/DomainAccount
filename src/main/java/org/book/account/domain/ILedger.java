@@ -11,7 +11,4 @@ public interface ILedger {
     IBudget getBudget();
 
     List<ITransaction> getTransactions();
-
-    // TODO expected to be function of Account
-    List<ITransaction> getTransactions(IAccount anAccount);
 }
