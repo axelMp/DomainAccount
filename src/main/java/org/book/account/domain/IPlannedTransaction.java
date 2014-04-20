@@ -1,6 +1,7 @@
 package org.book.account.domain;
 
 import java.util.Date;
+import java.util.List;
 
 public interface IPlannedTransaction {
     String getNarration();
@@ -18,4 +19,6 @@ public interface IPlannedTransaction {
     Amount forecast(Date date);
 
     boolean isApplicableForPeriod(Date from, Date until);
+
+    boolean matchesAnyPerformedTransaction(List<ITransaction> transactions);
 }

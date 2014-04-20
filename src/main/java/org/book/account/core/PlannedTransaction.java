@@ -4,9 +4,11 @@ import org.apache.commons.lang3.Validate;
 import org.book.account.domain.Amount;
 import org.book.account.domain.ExecutionOfPlannedTransaction;
 import org.book.account.domain.IPlannedTransaction;
+import org.book.account.domain.ITransaction;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "planned_transaction")
@@ -100,9 +102,35 @@ public class PlannedTransaction implements IPlannedTransaction {
     }
 
     public boolean isApplicableForPeriod(Date from, Date until) {
+        Validate.notNull(from, "The from date must not be null");
+        Validate.notNull(until, "The until date must not be null");
+
         boolean planAlreadyOverdue = from.after(getEndsOn());
         boolean planExpectedAfterForecast = getStartsOn().after(until);
         return !(planAlreadyOverdue || planExpectedAfterForecast);
+    }
+
+    public boolean matchesAnyPerformedTransaction(List<ITransaction> transactions) {
+        switch (getExecutionOfPlannedTransaction()) {
+            case SINGLE:
+                for (ITransaction transaction : transactions) {
+                    if (matchesSinglePlanned(transaction)) {
+                        return true;
+                    }
+                }
+                return false;
+            case LINEARLY_PROGRESSING:
+                return false;
+            default:
+                throw new IllegalArgumentException("cannot match transactions for executionOfPlannedTransaction type " + getExecutionOfPlannedTransaction().toString());
+        }
+    }
+
+    private boolean matchesSinglePlanned(ITransaction transaction) {
+        boolean identicalNarration = transaction.getNarration().equals(getNarration());
+        boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(getStartsOn());
+        boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(getEndsOn());
+        return identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
     }
 
     private Amount forecastLinearlyProgressing(Date date) {

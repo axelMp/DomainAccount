@@ -17,28 +17,11 @@ class ForecastService {
         return Amount.add(currentClosure, expectedClosure);
     }
 
-    private boolean matches(IPlannedTransaction plannedTransaction, ITransaction transaction) {
-        boolean identicalNarration = transaction.getNarration().equals(plannedTransaction.getNarration());
-        boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(plannedTransaction.getStartsOn());
-        boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(plannedTransaction.getEndsOn());
-        return identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
-    }
-
     private void removeSingledPlannedTransactionsWithMatchingTransaction(List<IPlannedTransaction> plannedTransactions, List<ITransaction> transactions) {
         ListIterator<IPlannedTransaction> iterator = plannedTransactions.listIterator();
         while (iterator.hasNext()) {
             IPlannedTransaction plannedTransaction = iterator.next();
-            if (!plannedTransaction.getExecutionOfPlannedTransaction().equals(ExecutionOfPlannedTransaction.SINGLE)) {
-                continue;
-            }
-            boolean matchingTransactionFound = false;
-            for (ITransaction transaction : transactions) {
-                if (matches(plannedTransaction, transaction)) {
-                    matchingTransactionFound = true;
-                }
-            }
-
-            if (matchingTransactionFound) {
+            if (plannedTransaction.matchesAnyPerformedTransaction(transactions)) {
                 iterator.remove();
             }
         }
