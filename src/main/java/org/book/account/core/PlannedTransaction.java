@@ -3,14 +3,14 @@ package org.book.account.core;
 import org.apache.commons.lang3.Validate;
 import org.book.account.domain.Amount;
 import org.book.account.domain.ExecutionOfPlannedTransaction;
-import org.book.account.domain.ITransaction;
+import org.book.account.domain.IPlannedTransaction;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "planned_transaction")
-public class PlannedTransaction implements ITransaction {
+public class PlannedTransaction implements IPlannedTransaction {
     @ManyToOne
     @JoinColumn(name = "debitor_id")
     private Account debitor;
@@ -69,7 +69,7 @@ public class PlannedTransaction implements ITransaction {
         return narration;
     }
 
-    public final void setNarration(String narration) {
+    public void setNarration(String narration) {
         Validate.notNull(narration, "The narration must not be null");
         this.narration = narration;
     }
@@ -78,7 +78,7 @@ public class PlannedTransaction implements ITransaction {
         return amount;
     }
 
-    public final void setAmount(Amount amount) {
+    public void setAmount(Amount amount) {
         Validate.notNull(amount, "The amount must not be null");
         this.amount = amount;
     }

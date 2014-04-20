@@ -8,5 +8,7 @@ public interface ILedger {
 
     List<IAccount> getAccounts();
 
+    IBudget getBudget();
+
     List<ITransaction> getTransactions();
 }

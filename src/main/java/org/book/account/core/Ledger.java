@@ -17,18 +17,20 @@ public class Ledger implements ILedger {
     private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
     @Column(name = "NAME")
     private String name;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "ledger_transactions",
             joinColumns = @JoinColumn(name = "id")
     )
     private List<Transaction> transactions = new LinkedList<Transaction>();
-    @OneToMany(mappedBy = "ledger")
+    @OneToMany(mappedBy = "ledger", cascade = CascadeType.ALL)
     private List<Account> accounts = new LinkedList<Account>();
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Budget budget;
 
     // required by hibernate
     public Ledger() {
@@ -37,7 +39,12 @@ public class Ledger implements ILedger {
 
     public Ledger(String name) {
         Validate.notNull(name, "The name must not be null");
+        this.budget = new Budget(this);
         this.name = name;
+    }
+
+    public Budget getBudget() {
+        return budget;
     }
 
     public List<IAccount> getAccounts() {

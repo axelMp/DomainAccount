@@ -3,6 +3,8 @@ package org.book.account.core;
 import org.apache.commons.lang3.Validate;
 import org.book.account.domain.Amount;
 import org.book.account.domain.ExecutionOfPlannedTransaction;
+import org.book.account.domain.IBudget;
+import org.book.account.domain.IPlannedTransaction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "budget")
-public class Budget {
+public class Budget implements IBudget {
     @OneToMany
     @JoinTable(
             name = "planned_transactions",
@@ -39,15 +41,15 @@ public class Budget {
         return ledger;
     }
 
-    public List<PlannedTransaction> getPlannedTransactions() {
-        return plannedTransactions;
+    public List<IPlannedTransaction> getPlannedTransactions() {
+        return new LinkedList<IPlannedTransaction>(plannedTransactions);
     }
 
-    public List<PlannedTransaction> getPlannedTransactions(Account anAccount) {
+    List<PlannedTransaction> getPlannedTransactions(Account anAccount) {
         List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
-        for (PlannedTransaction plannedTransaction : getPlannedTransactions()) {
-            if (anAccount.equals(plannedTransaction.getCreditor()) || anAccount.equals(plannedTransaction.getDebitor())) {
-                plannedTransactions.add(plannedTransaction);
+        for (IPlannedTransaction plannedTransaction : getPlannedTransactions()) {
+            if (anAccount.equals(((PlannedTransaction) plannedTransaction).getCreditor()) || anAccount.equals(((PlannedTransaction) plannedTransaction).getDebitor())) {
+                plannedTransactions.add(((PlannedTransaction) plannedTransaction));
             }
         }
 
