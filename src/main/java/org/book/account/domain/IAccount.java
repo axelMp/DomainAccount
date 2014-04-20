@@ -9,4 +9,6 @@ public interface IAccount {
     Amount closure(Date date);
 
     List<ITransaction> getTransactions();
+
+    String getName();
 }
