@@ -1,6 +1,7 @@
 package org.book.account.core;
 
 import org.book.account.domain.Amount;
+import org.book.account.domain.ExecutionOfPlannedTransaction;
 import org.junit.Test;
 
 import java.util.Date;
@@ -17,6 +18,6 @@ public class BudgetTest {
         Date randomDate = Utilities.today();
         Date dayBeforeRandomDate = Utilities.previousDay(randomDate);
 
-        sut.planLinearlyProgressingTransaction("randomString", randomDate, dayBeforeRandomDate, randomAmount, randomAccount, anotherRandomAccount);
+        sut.plan("randomString", randomDate, dayBeforeRandomDate, randomAmount, randomAccount, anotherRandomAccount, ExecutionOfPlannedTransaction.SINGLE);
     }
 }
