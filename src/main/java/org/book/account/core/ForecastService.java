@@ -17,8 +17,7 @@ class ForecastService {
         Date today = new Date();
         while (iterator.hasNext()) {
             IPlannedTransaction plannedTransaction1 = iterator.next();
-            if (!plannedTransaction1.isApplicableForPeriod(today, forecastOn)
-                    || plannedTransaction1.matchesAnyPerformedTransaction(transactions)) {
+            if (plannedTransaction1.matchesAnyPerformedTransaction(transactions)) {
                 iterator.remove();
             }
         }

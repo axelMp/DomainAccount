@@ -16,10 +16,6 @@ public interface IPlannedTransaction {
 
     ExecutionOfPlannedTransaction getExecutionOfPlannedTransaction();
 
-    Amount forecast(Date date);
-
-    boolean isApplicableForPeriod(Date from, Date until);
-
     boolean matchesAnyPerformedTransaction(List<ITransaction> transactions);
 
     Amount forecast(Date from, Date until);

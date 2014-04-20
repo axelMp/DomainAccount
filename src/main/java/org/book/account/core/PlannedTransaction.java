@@ -101,10 +101,7 @@ public class PlannedTransaction implements IPlannedTransaction {
         }
     }
 
-    public boolean isApplicableForPeriod(Date from, Date until) {
-        Validate.notNull(from, "The from date must not be null");
-        Validate.notNull(until, "The until date must not be null");
-
+    private boolean isApplicableForPeriod(Date from, Date until) {
         boolean planAlreadyOverdue = from.after(getEndsOn());
         boolean planExpectedAfterForecast = getStartsOn().after(until);
         return !(planAlreadyOverdue || planExpectedAfterForecast);
@@ -157,15 +154,13 @@ public class PlannedTransaction implements IPlannedTransaction {
         return forecastSingle(until);
     }
 
-    public Amount forecast(Date date) {
-        Validate.notNull(date, "The date must not be null");
-        Date today = new Date();
-        return forecast(today, date);
-    }
-
     public Amount forecast(Date from, Date until) {
         Validate.notNull(from, "The from date must not be null");
         Validate.notNull(until, "The until date must not be null");
+
+        if (!isApplicableForPeriod(from, until)) {
+            return Amount.noAmount();
+        }
 
         switch (getExecutionOfPlannedTransaction()) {
             case SINGLE:
