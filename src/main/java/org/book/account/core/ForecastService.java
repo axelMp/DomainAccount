@@ -9,33 +9,20 @@ import java.util.ListIterator;
 class ForecastService {
     Amount forecastClosure(IAccount anAccount, Date forecastOn) {
         List<IPlannedTransaction> plannedTransactions = anAccount.getPlannedTransactions();
-        removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
-        removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, anAccount.getTransactions());
+        List<ITransaction> transactions = anAccount.getTransactions();
+        ListIterator<IPlannedTransaction> iterator1 = plannedTransactions.listIterator();
         Date today = new Date();
+        while (iterator1.hasNext()) {
+            IPlannedTransaction plannedTransaction1 = iterator1.next();
+            if (!plannedTransaction1.isApplicableForPeriod(today, forecastOn)
+                    || plannedTransaction1.matchesAnyPerformedTransaction(transactions)) {
+                iterator1.remove();
+            }
+        }
+
         Amount currentClosure = anAccount.closure(today);
         Amount expectedClosure = sumPlannedTransactions(plannedTransactions, anAccount, forecastOn);
         return Amount.add(currentClosure, expectedClosure);
-    }
-
-    private void removeSingledPlannedTransactionsWithMatchingTransaction(List<IPlannedTransaction> plannedTransactions, List<ITransaction> transactions) {
-        ListIterator<IPlannedTransaction> iterator = plannedTransactions.listIterator();
-        while (iterator.hasNext()) {
-            IPlannedTransaction plannedTransaction = iterator.next();
-            if (plannedTransaction.matchesAnyPerformedTransaction(transactions)) {
-                iterator.remove();
-            }
-        }
-    }
-
-    private void removePlansOutsideNowAndForecast(List<IPlannedTransaction> plannedTransactions, Date forecastOn) {
-        ListIterator<IPlannedTransaction> iterator = plannedTransactions.listIterator();
-        Date today = new Date();
-        while (iterator.hasNext()) {
-            IPlannedTransaction plannedTransaction = iterator.next();
-            if (!plannedTransaction.isApplicableForPeriod(today, forecastOn)) {
-                iterator.remove();
-            }
-        }
     }
 
     private Amount sumPlannedTransactions(List<IPlannedTransaction> plan, IAccount anAccount, Date forecastOn) {
