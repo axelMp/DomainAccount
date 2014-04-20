@@ -1,5 +1,6 @@
 package org.book.account.core;
 
+import org.book.account.domain.Amount;
 import org.junit.Test;
 
 import java.util.Date;

@@ -3,7 +3,7 @@ package org.book.account.core;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.book.account.domain.ILedger;
+import org.book.account.domain.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,19 +40,19 @@ public class Ledger implements ILedger {
         this.name = name;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public List<IAccount> getAccounts() {
+        return new LinkedList<IAccount>(accounts);
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    public List<ITransaction> getTransactions() {
+        return new LinkedList<ITransaction>(transactions);
     }
 
-    public List<Transaction> getTransactions(Account anAccount) {
+    List<Transaction> getTransactions(Account anAccount) {
         List<Transaction> result = new LinkedList<Transaction>();
-        for (Transaction transaction : getTransactions()) {
+        for (ITransaction transaction : getTransactions()) {
             if (transaction.getCreditor().equals(anAccount) || transaction.getDebitor().equals(anAccount)) {
-                result.add(transaction);
+                result.add((Transaction) transaction);
             }
         }
         return result;
@@ -62,7 +62,7 @@ public class Ledger implements ILedger {
         return name;
     }
 
-    public Account createAccount(String name, Account.AccountType accountType) {
+    public Account createAccount(String name, AccountType accountType) {
         for (Account anAccount : accounts) {
             if (anAccount.getName().equals(name)) {
                 throw new IllegalArgumentException("account with name " + name + " already exists");
@@ -94,16 +94,16 @@ public class Ledger implements ILedger {
         accounts.remove(account);
     }
 
-    public Transaction book(String narration, Date occurredOn, Amount amount, Account debitor, Account creditor) {
-        assertThatAccountExists(debitor);
-        assertThatAccountExists(creditor);
+    public ITransaction book(String narration, Date occurredOn, Amount amount, IAccount debitor, IAccount creditor) {
+        assertThatAccountExists((Account) debitor);
+        assertThatAccountExists((Account) creditor);
 
-        Transaction newTransaction = new Transaction(narration, amount, debitor, creditor, occurredOn);
+        Transaction newTransaction = new Transaction(narration, amount, (Account) debitor, (Account) creditor, occurredOn);
         transactions.add(newTransaction);
         return newTransaction;
     }
 
-    public void remove(Transaction transaction) {
-        transactions.remove(transaction);
+    public void remove(ITransaction transaction) {
+        transactions.remove((Transaction) transaction);
     }
 }

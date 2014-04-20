@@ -5,7 +5,7 @@ import org.book.account.domain.ILedger;
 
 public class Factory implements IFactory {
     @Override
-    public ILedger create(String name) {
+    public ILedger createLedger(String name) {
         return new Ledger(name);
     }
 }

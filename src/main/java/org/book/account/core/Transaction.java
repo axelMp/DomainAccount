@@ -1,6 +1,8 @@
 package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
+import org.book.account.domain.Amount;
+import org.book.account.domain.ITransaction;
 
 import javax.persistence.*;
 import java.util.Date;

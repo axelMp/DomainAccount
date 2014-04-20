@@ -1,6 +1,8 @@
 package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
+import org.book.account.domain.Amount;
+import org.book.account.domain.ExecutionOfPlannedTransaction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -53,18 +55,18 @@ public class Budget {
     }
 
     public PlannedTransaction planLinearlyProgressingTransaction(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor) {
-        return plan(narration, startsOn, endsOn, amount, debitor, creditor, PlannedTransaction.Execution.LINEARLY_PROGRESSING);
+        return plan(narration, startsOn, endsOn, amount, debitor, creditor, ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING);
     }
 
     public PlannedTransaction planSingleTransaction(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor) {
-        return plan(narration, startsOn, endsOn, amount, debitor, creditor, PlannedTransaction.Execution.SINGLE);
+        return plan(narration, startsOn, endsOn, amount, debitor, creditor, ExecutionOfPlannedTransaction.SINGLE);
     }
 
-    private PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, PlannedTransaction.Execution execution) {
+    private PlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, Account debitor, Account creditor, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
         ledger.assertThatAccountExists(debitor);
         ledger.assertThatAccountExists(creditor);
 
-        PlannedTransaction newTransaction = new PlannedTransaction(narration, amount, debitor, creditor, startsOn, endsOn, execution);
+        PlannedTransaction newTransaction = new PlannedTransaction(narration, amount, debitor, creditor, startsOn, endsOn, executionOfPlannedTransaction);
         plannedTransactions.add(newTransaction);
         return newTransaction;
     }

@@ -1,6 +1,9 @@
 package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
+import org.book.account.domain.Amount;
+import org.book.account.domain.ExecutionOfPlannedTransaction;
+import org.book.account.domain.ITransaction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,14 +26,14 @@ public class PlannedTransaction implements ITransaction {
     private Long id;
     @Column(name = "EXECUTION")
     @Enumerated(EnumType.STRING)
-    private Execution execution;
+    private ExecutionOfPlannedTransaction executionOfPlannedTransaction;
 
     // required by hibernate
     public PlannedTransaction() {
 
     }
 
-    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Date startsOn, Date endsOn, Execution execution) {
+    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Date startsOn, Date endsOn, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(creditor, "The creditor account must not be null");
 
@@ -45,13 +48,13 @@ public class PlannedTransaction implements ITransaction {
             throw new IllegalArgumentException("planned transaction should have a start date before the given end date");
         }
 
-        this.execution = execution;
+        this.executionOfPlannedTransaction = executionOfPlannedTransaction;
         this.startsOn = startsOn;
         this.endsOn = endsOn;
     }
 
-    public Execution getExecution() {
-        return execution;
+    public ExecutionOfPlannedTransaction getExecutionOfPlannedTransaction() {
+        return executionOfPlannedTransaction;
     }
 
     public Date getStartsOn() {
@@ -115,18 +118,14 @@ public class PlannedTransaction implements ITransaction {
     public Amount forecast(Date date) {
         Validate.notNull(date, "The date must not be null");
 
-        switch (execution) {
+        switch (executionOfPlannedTransaction) {
             case SINGLE:
                 return forecastSingle(date);
             case LINEARLY_PROGRESSING:
                 return forecastLinearlyProgressing(date);
             default:
-                throw new IllegalArgumentException("cannot forecast for execution type " + execution.toString());
+                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + executionOfPlannedTransaction.toString());
         }
     }
 
-    public enum Execution {
-        SINGLE,
-        LINEARLY_PROGRESSING
-    }
 }

@@ -1,4 +1,4 @@
-package org.book.account.core;
+package org.book.account.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

@@ -1,5 +1,8 @@
 package org.book.account.core;
 
+import org.book.account.domain.AccountType;
+import org.book.account.domain.Amount;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -32,19 +35,19 @@ public class Utilities {
     static Account generateRandomAccount(Ledger aLedger) {
         final String anAccountName = UUID.randomUUID().toString();
         int randomTypeIndex = (int) Math.round(4 * Math.random());
-        Account.AccountType aType;
+        AccountType aType;
         switch (randomTypeIndex) {
             case 0:
-                aType = Account.AccountType.ASSET;
+                aType = AccountType.ASSET;
                 break;
             case 1:
-                aType = Account.AccountType.EXPENSE;
+                aType = AccountType.EXPENSE;
                 break;
             case 2:
-                aType = Account.AccountType.LIABILITY;
+                aType = AccountType.LIABILITY;
                 break;
             default:
-                aType = Account.AccountType.INCOME;
+                aType = AccountType.INCOME;
         }
         return aLedger.createAccount(anAccountName, aType);
     }

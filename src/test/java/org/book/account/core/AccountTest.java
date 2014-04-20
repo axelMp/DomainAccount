@@ -1,5 +1,7 @@
 package org.book.account.core;
 
+import org.book.account.domain.AccountType;
+import org.book.account.domain.Amount;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +13,7 @@ public class AccountTest {
         Ledger ledger = new Ledger("randomName");
         final String anAccountName = "anAccountName";
 
-        Account anAccount = ledger.createAccount(anAccountName, Account.AccountType.ASSET);
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.ASSET);
 
         Assert.assertEquals(anAccount.closure(new Date()), Amount.noAmount());
     }
@@ -25,8 +27,8 @@ public class AccountTest {
         int randomCents = 3849;
         Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
         Amount negativeRandomAmount = new Amount(-randomCents, Amount.Currency.EUR);
-        Account anAccount = ledger.createAccount(anAccountName, Account.AccountType.INCOME);
-        Account anotherAccount = ledger.createAccount(anotherAccountName, Account.AccountType.INCOME);
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.INCOME);
+        Account anotherAccount = ledger.createAccount(anotherAccountName, AccountType.INCOME);
 
         ledger.book("aNarration", randomDay, randomAmount, anAccount, anotherAccount);
         Assert.assertEquals(anAccount.closure(randomDay), negativeRandomAmount);
@@ -40,8 +42,8 @@ public class AccountTest {
         Date randomDay = new Date();
         int randomCents = 3849;
         Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
-        Account anAccount = ledger.createAccount(anAccountName, Account.AccountType.INCOME);
-        Account anotherAccount = ledger.createAccount(anotherAccountName, Account.AccountType.INCOME);
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.INCOME);
+        Account anotherAccount = ledger.createAccount(anotherAccountName, AccountType.INCOME);
 
         ledger.book("aNarration", randomDay, randomAmount, anAccount, anotherAccount);
         Assert.assertEquals(anAccount.closure(Utilities.previousDay(randomDay)), Amount.noAmount());
@@ -58,8 +60,8 @@ public class AccountTest {
         int randomCents = 3849;
         Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
         Amount negativeRandomAmount = new Amount(-randomCents, Amount.Currency.EUR);
-        Account anAccount = ledger.createAccount(anAccountName, Account.AccountType.INCOME);
-        Account anotherAccount = ledger.createAccount(anotherAccountName, Account.AccountType.INCOME);
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.INCOME);
+        Account anotherAccount = ledger.createAccount(anotherAccountName, AccountType.INCOME);
 
         ledger.book("aNarration", dayOfTransaction, randomAmount, anAccount, anotherAccount);
         Assert.assertEquals(anAccount.closure(dayOfClosure), negativeRandomAmount);

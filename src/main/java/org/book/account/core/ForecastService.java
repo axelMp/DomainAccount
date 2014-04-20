@@ -1,6 +1,9 @@
 package org.book.account.core;
 
 
+import org.book.account.domain.Amount;
+import org.book.account.domain.ExecutionOfPlannedTransaction;
+
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -36,7 +39,7 @@ public class ForecastService {
         ListIterator<PlannedTransaction> iterator = plannedTransactions.listIterator();
         while (iterator.hasNext()) {
             PlannedTransaction plannedTransaction = iterator.next();
-            if (!plannedTransaction.getExecution().equals(PlannedTransaction.Execution.SINGLE)) {
+            if (!plannedTransaction.getExecutionOfPlannedTransaction().equals(ExecutionOfPlannedTransaction.SINGLE)) {
                 continue;
             }
             boolean matchingTransactionFound = false;
@@ -70,7 +73,7 @@ public class ForecastService {
         Date today = new Date();
         for (PlannedTransaction plannedTransaction : plan) {
             Amount forecastOfPlannedTransaction = plannedTransaction.forecast(forecastOn);
-            if (plannedTransaction.getExecution().equals(PlannedTransaction.Execution.LINEARLY_PROGRESSING)) {
+            if (plannedTransaction.getExecutionOfPlannedTransaction().equals(ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING)) {
                 forecastOfPlannedTransaction = Amount.subtract(forecastOfPlannedTransaction, plannedTransaction.forecast(today));
             }
             if (anAccount.equals(plannedTransaction.getCreditor())) {

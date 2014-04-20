@@ -1,11 +1,15 @@
 package org.book.account.core;
 
+import org.book.account.domain.AccountType;
+import org.book.account.domain.Amount;
+import org.book.account.domain.IAccount;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "account")
-public class Account {
+public class Account implements IAccount {
     private String name;
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
@@ -32,7 +36,7 @@ public class Account {
 
     public Amount closure(Date date) {
         Amount result = Amount.noAmount();
-        for (Transaction aTransaction : ledger.getTransactions()) {
+        for (Transaction aTransaction : ledger.getTransactions(this)) {
             if (aTransaction.getOccurredOn().before(date) || aTransaction.getOccurredOn().equals(date)) {
                 if (aTransaction.getDebitor().equals(this)) {
                     result = Amount.subtract(result, aTransaction.getAmount());
@@ -52,10 +56,5 @@ public class Account {
         return accountType;
     }
 
-    public enum AccountType {
-        INCOME,
-        EXPENSE,
-        LIABILITY,
-        ASSET
-    }
+
 }
