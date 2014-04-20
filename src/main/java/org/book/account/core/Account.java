@@ -21,6 +21,10 @@ public class Account implements IAccount {
     @JoinColumn(name = "ledger_id")
     private Ledger ledger;
 
+    @ManyToOne
+    @JoinColumn(name = "budget_id")
+    private Budget budget;
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,10 +35,11 @@ public class Account implements IAccount {
 
     }
 
-    Account(String name, AccountType accountType, Ledger ledger) {
+    Account(String name, AccountType accountType, Ledger ledger, Budget budget) {
         this.name = name;
         this.accountType = accountType;
         this.ledger = ledger;
+        this.budget = budget;
     }
 
     public Amount closure(Date date) {
