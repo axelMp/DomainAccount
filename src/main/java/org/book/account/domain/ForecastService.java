@@ -8,13 +8,12 @@ public class ForecastService {
     /**
      * Forecasts closure of account based on currently known and planned transactions
      *
-     * @param aLedger    ledger which contains the account
      * @param anAccount  account for which to forecast
      * @param plan       plan which transactions are probably going to take place
      * @param forecastOn forecast date
      * @return forecast amount for given account
      */
-    public Amount forecastClosure(ILedger aLedger, IAccount anAccount, IBudget plan, Date forecastOn) {
+    public Amount forecastClosure(IAccount anAccount, IBudget plan, Date forecastOn) {
         List<IPlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
         removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, anAccount.getTransactions());
