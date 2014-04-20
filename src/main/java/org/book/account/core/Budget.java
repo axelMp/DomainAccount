@@ -42,7 +42,7 @@ public class Budget {
     }
 
     public List<PlannedTransaction> getPlannedTransactions(Account anAccount) {
-        List<PlannedTransaction> plannedTransactions = new LinkedList<>();
+        List<PlannedTransaction> plannedTransactions = new LinkedList<PlannedTransaction>();
         for (PlannedTransaction plannedTransaction : getPlannedTransactions()) {
             if (anAccount.equals(plannedTransaction.getCreditor()) || anAccount.equals(plannedTransaction.getDebitor())) {
                 plannedTransactions.add(plannedTransaction);
