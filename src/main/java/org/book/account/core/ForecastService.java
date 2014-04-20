@@ -49,9 +49,7 @@ class ForecastService {
         Date today = new Date();
         while (iterator.hasNext()) {
             IPlannedTransaction plannedTransaction = iterator.next();
-            boolean planAlreadyOverdue = today.after(plannedTransaction.getEndsOn());
-            boolean planExpectedAfterForecast = plannedTransaction.getStartsOn().after(forecastOn);
-            if (planAlreadyOverdue || planExpectedAfterForecast) {
+            if (!plannedTransaction.isApplicableForPeriod(today, forecastOn)) {
                 iterator.remove();
             }
         }

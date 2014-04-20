@@ -99,6 +99,12 @@ public class PlannedTransaction implements IPlannedTransaction {
         }
     }
 
+    public boolean isApplicableForPeriod(Date from, Date until) {
+        boolean planAlreadyOverdue = from.after(getEndsOn());
+        boolean planExpectedAfterForecast = getStartsOn().after(until);
+        return !(planAlreadyOverdue || planExpectedAfterForecast);
+    }
+
     private Amount forecastLinearlyProgressing(Date date) {
         if (date.after(endsOn)) {
             return getAmount();
