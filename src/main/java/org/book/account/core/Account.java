@@ -3,6 +3,7 @@ package org.book.account.core;
 import org.book.account.domain.AccountType;
 import org.book.account.domain.Amount;
 import org.book.account.domain.IAccount;
+import org.book.account.domain.ITransaction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -36,7 +37,7 @@ public class Account implements IAccount {
 
     public Amount closure(Date date) {
         Amount result = Amount.noAmount();
-        for (Transaction aTransaction : ledger.getTransactions(this)) {
+        for (ITransaction aTransaction : ledger.getTransactions(this)) {
             if (aTransaction.getOccurredOn().before(date) || aTransaction.getOccurredOn().equals(date)) {
                 if (aTransaction.getDebitor().equals(this)) {
                     result = Amount.subtract(result, aTransaction.getAmount());

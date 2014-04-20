@@ -1,8 +1,4 @@
-package org.book.account.core;
-
-
-import org.book.account.domain.Amount;
-import org.book.account.domain.ExecutionOfPlannedTransaction;
+package org.book.account.domain;
 
 import java.util.Date;
 import java.util.List;
@@ -18,8 +14,8 @@ public class ForecastService {
      * @param forecastOn forecast date
      * @return forecast amount for given account
      */
-    public Amount forecastClosure(Ledger aLedger, Account anAccount, Budget plan, Date forecastOn) {
-        List<PlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
+    public Amount forecastClosure(ILedger aLedger, IAccount anAccount, IBudget plan, Date forecastOn) {
+        List<IPlannedTransaction> plannedTransactions = plan.getPlannedTransactions(anAccount);
         removePlansOutsideNowAndForecast(plannedTransactions, forecastOn);
         removeSingledPlannedTransactionsWithMatchingTransaction(plannedTransactions, aLedger.getTransactions(anAccount));
         Date today = new Date();
@@ -28,22 +24,22 @@ public class ForecastService {
         return Amount.add(currentClosure, expectedClosure);
     }
 
-    private boolean matches(PlannedTransaction plannedTransaction, Transaction transaction) {
+    private boolean matches(IPlannedTransaction plannedTransaction, ITransaction transaction) {
         boolean identicalNarration = transaction.getNarration().equals(plannedTransaction.getNarration());
         boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(plannedTransaction.getStartsOn());
         boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(plannedTransaction.getEndsOn());
         return identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
     }
 
-    private void removeSingledPlannedTransactionsWithMatchingTransaction(List<PlannedTransaction> plannedTransactions, List<Transaction> transactions) {
-        ListIterator<PlannedTransaction> iterator = plannedTransactions.listIterator();
+    private void removeSingledPlannedTransactionsWithMatchingTransaction(List<IPlannedTransaction> plannedTransactions, List<ITransaction> transactions) {
+        ListIterator<IPlannedTransaction> iterator = plannedTransactions.listIterator();
         while (iterator.hasNext()) {
-            PlannedTransaction plannedTransaction = iterator.next();
+            IPlannedTransaction plannedTransaction = iterator.next();
             if (!plannedTransaction.getExecutionOfPlannedTransaction().equals(ExecutionOfPlannedTransaction.SINGLE)) {
                 continue;
             }
             boolean matchingTransactionFound = false;
-            for (Transaction transaction : transactions) {
+            for (ITransaction transaction : transactions) {
                 if (matches(plannedTransaction, transaction)) {
                     matchingTransactionFound = true;
                 }
@@ -55,11 +51,11 @@ public class ForecastService {
         }
     }
 
-    private void removePlansOutsideNowAndForecast(List<PlannedTransaction> plannedTransactions, Date forecastOn) {
-        ListIterator<PlannedTransaction> iterator = plannedTransactions.listIterator();
+    private void removePlansOutsideNowAndForecast(List<IPlannedTransaction> plannedTransactions, Date forecastOn) {
+        ListIterator<IPlannedTransaction> iterator = plannedTransactions.listIterator();
         Date today = new Date();
         while (iterator.hasNext()) {
-            PlannedTransaction plannedTransaction = iterator.next();
+            IPlannedTransaction plannedTransaction = iterator.next();
             boolean planAlreadyOverdue = today.after(plannedTransaction.getEndsOn());
             boolean planExpectedAfterForecast = plannedTransaction.getStartsOn().after(forecastOn);
             if (planAlreadyOverdue || planExpectedAfterForecast) {
@@ -68,10 +64,10 @@ public class ForecastService {
         }
     }
 
-    private Amount sumPlannedTransactions(List<PlannedTransaction> plan, Account anAccount, Date forecastOn) {
+    private Amount sumPlannedTransactions(List<IPlannedTransaction> plan, IAccount anAccount, Date forecastOn) {
         Amount sum = Amount.noAmount();
         Date today = new Date();
-        for (PlannedTransaction plannedTransaction : plan) {
+        for (IPlannedTransaction plannedTransaction : plan) {
             Amount forecastOfPlannedTransaction = plannedTransaction.forecast(forecastOn);
             if (plannedTransaction.getExecutionOfPlannedTransaction().equals(ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING)) {
                 forecastOfPlannedTransaction = Amount.subtract(forecastOfPlannedTransaction, plannedTransaction.forecast(today));
