@@ -149,17 +149,31 @@ public class PlannedTransaction implements IPlannedTransaction {
         }
     }
 
-    public Amount forecast(Date date) {
-        Validate.notNull(date, "The date must not be null");
-
-        switch (executionOfPlannedTransaction) {
-            case SINGLE:
-                return forecastSingle(date);
-            case LINEARLY_PROGRESSING:
-                return forecastLinearlyProgressing(date);
-            default:
-                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + executionOfPlannedTransaction.toString());
-        }
+    private Amount forecastLinearlyProgressing(Date from, Date until) {
+        return Amount.subtract(forecastLinearlyProgressing(until), forecastLinearlyProgressing(from));
     }
 
+    private Amount forecastSingle(Date from, Date until) {
+        return forecastSingle(until);
+    }
+
+    public Amount forecast(Date date) {
+        Validate.notNull(date, "The date must not be null");
+        Date today = new Date();
+        return forecast(today, date);
+    }
+
+    public Amount forecast(Date from, Date until) {
+        Validate.notNull(from, "The from date must not be null");
+        Validate.notNull(until, "The until date must not be null");
+
+        switch (getExecutionOfPlannedTransaction()) {
+            case SINGLE:
+                return forecastSingle(from, until);
+            case LINEARLY_PROGRESSING:
+                return forecastLinearlyProgressing(from, until);
+            default:
+                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + getExecutionOfPlannedTransaction().toString());
+        }
+    }
 }

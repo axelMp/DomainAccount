@@ -21,4 +21,6 @@ public interface IPlannedTransaction {
     boolean isApplicableForPeriod(Date from, Date until);
 
     boolean matchesAnyPerformedTransaction(List<ITransaction> transactions);
+
+    Amount forecast(Date from, Date until);
 }

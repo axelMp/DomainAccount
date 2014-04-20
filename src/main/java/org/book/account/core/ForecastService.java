@@ -1,6 +1,9 @@
 package org.book.account.core;
 
-import org.book.account.domain.*;
+import org.book.account.domain.Amount;
+import org.book.account.domain.IAccount;
+import org.book.account.domain.IPlannedTransaction;
+import org.book.account.domain.ITransaction;
 
 import java.util.Date;
 import java.util.List;
@@ -10,13 +13,13 @@ class ForecastService {
     Amount forecastClosure(IAccount anAccount, Date forecastOn) {
         List<IPlannedTransaction> plannedTransactions = anAccount.getPlannedTransactions();
         List<ITransaction> transactions = anAccount.getTransactions();
-        ListIterator<IPlannedTransaction> iterator1 = plannedTransactions.listIterator();
+        ListIterator<IPlannedTransaction> iterator = plannedTransactions.listIterator();
         Date today = new Date();
-        while (iterator1.hasNext()) {
-            IPlannedTransaction plannedTransaction1 = iterator1.next();
+        while (iterator.hasNext()) {
+            IPlannedTransaction plannedTransaction1 = iterator.next();
             if (!plannedTransaction1.isApplicableForPeriod(today, forecastOn)
                     || plannedTransaction1.matchesAnyPerformedTransaction(transactions)) {
-                iterator1.remove();
+                iterator.remove();
             }
         }
 
@@ -29,10 +32,8 @@ class ForecastService {
         Amount sum = Amount.noAmount();
         Date today = new Date();
         for (IPlannedTransaction plannedTransaction : plan) {
-            Amount forecastOfPlannedTransaction = plannedTransaction.forecast(forecastOn);
-            if (plannedTransaction.getExecutionOfPlannedTransaction().equals(ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING)) {
-                forecastOfPlannedTransaction = Amount.subtract(forecastOfPlannedTransaction, plannedTransaction.forecast(today));
-            }
+            Amount forecastOfPlannedTransaction = plannedTransaction.forecast(today, forecastOn);
+
             if (anAccount.equals(plannedTransaction.getCreditor())) {
                 sum = Amount.add(sum, forecastOfPlannedTransaction);
             } else {
