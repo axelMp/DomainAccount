@@ -4,9 +4,11 @@ import org.apache.commons.lang3.Validate;
 import org.book.account.domain.Amount;
 import org.book.account.domain.ExecutionOfPlannedTransaction;
 import org.book.account.domain.IPlannedTransaction;
+import org.book.account.domain.ITransaction;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "planned_transaction")
@@ -118,14 +120,38 @@ public class PlannedTransaction implements IPlannedTransaction {
     public Amount forecast(Date date) {
         Validate.notNull(date, "The date must not be null");
 
-        switch (executionOfPlannedTransaction) {
+        switch (getExecutionOfPlannedTransaction()) {
             case SINGLE:
                 return forecastSingle(date);
             case LINEARLY_PROGRESSING:
                 return forecastLinearlyProgressing(date);
             default:
-                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + executionOfPlannedTransaction.toString());
+                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + getExecutionOfPlannedTransaction().toString());
         }
     }
 
+    public boolean matchesTransaction(List<ITransaction> transactions) {
+        Validate.notNull(transactions, "The transactions must not be null");
+
+        switch (getExecutionOfPlannedTransaction()) {
+            case SINGLE:
+                return false;
+            case LINEARLY_PROGRESSING:
+                for (ITransaction transaction : transactions) {
+                    if (matches(transaction)) {
+                        return true;
+                    }
+                }
+                return false;
+            default:
+                throw new IllegalArgumentException("cannot match transactions with executionOfPlannedTransaction type " + getExecutionOfPlannedTransaction().toString());
+        }
+    }
+
+    private boolean matches(ITransaction transaction) {
+        boolean identicalNarration = transaction.getNarration().equals(getNarration());
+        boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(getStartsOn());
+        boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(getEndsOn());
+        return identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
+    }
 }
