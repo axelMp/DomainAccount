@@ -88,7 +88,7 @@ class PlannedTransaction implements IPlannedTransaction {
 
     private boolean matchesSinglePlanned(ITransaction transaction) {
         boolean identicalNarration = transaction.getNarration().equals(getNarration());
-        return identicalNarration && getSchedule().getPeriod().includes(transaction.getOccurredOn());
+        return identicalNarration && getSchedule().includes(transaction.getOccurredOn());
     }
 
     private Amount forecastLinearlyProgressing(Date date) {
