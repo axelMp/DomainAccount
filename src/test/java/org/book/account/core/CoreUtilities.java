@@ -1,15 +1,10 @@
 package org.book.account.core;
 
 import org.book.account.domain.AccountType;
-import org.book.account.domain.Amount;
 
 import java.util.UUID;
 
 public class CoreUtilities {
-    static Amount generateRandomAmountInEuro() {
-        int randomInt = (int) Math.round(10000 * Math.random());
-        return new Amount(randomInt, Amount.Currency.EUR);
-    }
 
     static Account generateRandomAccount(Ledger aLedger) {
         final String anAccountName = UUID.randomUUID().toString();
