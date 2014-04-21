@@ -16,7 +16,7 @@ class PlannedTransaction implements IPlannedTransaction {
     @ManyToOne
     @JoinColumn(name = "creditor_id")
     private Account creditor;
-    private Schedule schedule;
+    private Period period;
     private String narration;
     private Amount amount;
     @Id
@@ -39,16 +39,12 @@ class PlannedTransaction implements IPlannedTransaction {
         setAmount(amount);
         this.debitor = debitor;
         this.creditor = creditor;
-        this.schedule = new Schedule(startsOn, endsOn);
+        this.period = new Period(startsOn, endsOn);
         this.executionOfPlannedTransaction = executionOfPlannedTransaction;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public ExecutionOfPlannedTransaction getExecutionOfPlannedTransaction() {
-        return executionOfPlannedTransaction;
+    public Period getPeriod() {
+        return period;
     }
 
     public String getNarration() {
@@ -77,20 +73,6 @@ class PlannedTransaction implements IPlannedTransaction {
         return creditor;
     }
 
-    private Amount forecastSingle(Date date) {
-        if (date.after(getSchedule().getStartsOn())) {
-            return getAmount();
-        } else {
-            return Amount.noAmount();
-        }
-    }
-
-    private boolean isApplicableForPeriod(Date from, Date until) {
-        boolean planAlreadyOverdue = from.after(getSchedule().getEndsOn());
-        boolean planExpectedAfterForecast = getSchedule().getStartsOn().after(until);
-        return !(planAlreadyOverdue || planExpectedAfterForecast);
-    }
-
     public boolean matchesAnyPerformedTransaction(List<ITransaction> transactions) {
         switch (getExecutionOfPlannedTransaction()) {
             case SINGLE:
@@ -107,23 +89,25 @@ class PlannedTransaction implements IPlannedTransaction {
         }
     }
 
+    public ExecutionOfPlannedTransaction getExecutionOfPlannedTransaction() {
+        return executionOfPlannedTransaction;
+    }
+
     private boolean matchesSinglePlanned(ITransaction transaction) {
         boolean identicalNarration = transaction.getNarration().equals(getNarration());
-        boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(getSchedule().getStartsOn());
-        boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(getSchedule().getEndsOn());
-        return identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
+        return identicalNarration && getPeriod().includes(transaction.getOccurredOn());
     }
 
     private Amount forecastLinearlyProgressing(Date date) {
-        if (date.after(getSchedule().getEndsOn())) {
+        if (date.after(getPeriod().getEndsOn())) {
             return getAmount();
-        } else if (date.before(getSchedule().getStartsOn())) {
+        } else if (date.before(getPeriod().getStartsOn())) {
             return Amount.noAmount();
-        } else if (getSchedule().getStartsOn().getTime() == getSchedule().getEndsOn().getTime()) {
+        } else if (getPeriod().getStartsOn().getTime() == getPeriod().getEndsOn().getTime()) {
             return getAmount();
         } else {
-            double durationTransaction = schedule.getEndsOn().getTime() - getSchedule().getStartsOn().getTime();
-            double durationTillDate = date.getTime() - getSchedule().getStartsOn().getTime();
+            double durationTransaction = period.getEndsOn().getTime() - getPeriod().getStartsOn().getTime();
+            double durationTillDate = date.getTime() - getPeriod().getStartsOn().getTime();
             double percentage = durationTillDate / durationTransaction;
             Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
             return new Amount(partialAmount, getAmount().getCurrency());
@@ -135,14 +119,18 @@ class PlannedTransaction implements IPlannedTransaction {
     }
 
     private Amount forecastSingle(Date from, Date until) {
-        return forecastSingle(until);
+        if (until.after(getPeriod().getStartsOn())) {
+            return getAmount();
+        } else {
+            return Amount.noAmount();
+        }
     }
 
     public Amount forecast(Date from, Date until) {
         Validate.notNull(from, "The from date must not be null");
         Validate.notNull(until, "The until date must not be null");
-
-        if (!isApplicableForPeriod(from, until)) {
+        Period forecastPeriod = new Period(from, until);
+        if (!getPeriod().overlapsWith(forecastPeriod)) {
             return Amount.noAmount();
         }
 
