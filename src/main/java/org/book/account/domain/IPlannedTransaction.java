@@ -10,9 +10,7 @@ public interface IPlannedTransaction {
 
     IAccount getCreditor();
 
-    Date getStartsOn();
-
-    Date getEndsOn();
+    Schedule getSchedule();
 
     ExecutionOfPlannedTransaction getExecutionOfPlannedTransaction();
 

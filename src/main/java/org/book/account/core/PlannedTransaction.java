@@ -1,10 +1,7 @@
 package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
-import org.book.account.domain.Amount;
-import org.book.account.domain.ExecutionOfPlannedTransaction;
-import org.book.account.domain.IPlannedTransaction;
-import org.book.account.domain.ITransaction;
+import org.book.account.domain.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -19,8 +16,7 @@ class PlannedTransaction implements IPlannedTransaction {
     @ManyToOne
     @JoinColumn(name = "creditor_id")
     private Account creditor;
-    private Date startsOn;
-    private Date endsOn;
+    private Schedule schedule;
     private String narration;
     private Amount amount;
     @Id
@@ -43,28 +39,16 @@ class PlannedTransaction implements IPlannedTransaction {
         setAmount(amount);
         this.debitor = debitor;
         this.creditor = creditor;
-
-        Validate.notNull(startsOn, "The startsOn date must not be null");
-        Validate.notNull(endsOn, "The endsOn on must not be null");
-        if (startsOn.after(endsOn)) {
-            throw new IllegalArgumentException("planned transaction should have a start date before the given end date");
-        }
-
+        this.schedule = new Schedule(startsOn, endsOn);
         this.executionOfPlannedTransaction = executionOfPlannedTransaction;
-        this.startsOn = startsOn;
-        this.endsOn = endsOn;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
     }
 
     public ExecutionOfPlannedTransaction getExecutionOfPlannedTransaction() {
         return executionOfPlannedTransaction;
-    }
-
-    public Date getStartsOn() {
-        return startsOn;
-    }
-
-    public Date getEndsOn() {
-        return endsOn;
     }
 
     public String getNarration() {
@@ -94,7 +78,7 @@ class PlannedTransaction implements IPlannedTransaction {
     }
 
     private Amount forecastSingle(Date date) {
-        if (date.after(startsOn)) {
+        if (date.after(getSchedule().getStartsOn())) {
             return getAmount();
         } else {
             return Amount.noAmount();
@@ -102,8 +86,8 @@ class PlannedTransaction implements IPlannedTransaction {
     }
 
     private boolean isApplicableForPeriod(Date from, Date until) {
-        boolean planAlreadyOverdue = from.after(getEndsOn());
-        boolean planExpectedAfterForecast = getStartsOn().after(until);
+        boolean planAlreadyOverdue = from.after(getSchedule().getEndsOn());
+        boolean planExpectedAfterForecast = getSchedule().getStartsOn().after(until);
         return !(planAlreadyOverdue || planExpectedAfterForecast);
     }
 
@@ -125,21 +109,21 @@ class PlannedTransaction implements IPlannedTransaction {
 
     private boolean matchesSinglePlanned(ITransaction transaction) {
         boolean identicalNarration = transaction.getNarration().equals(getNarration());
-        boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(getStartsOn());
-        boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(getEndsOn());
+        boolean tookPlaceAfterPlannedStartsOn = !transaction.getOccurredOn().before(getSchedule().getStartsOn());
+        boolean tookPlaceBeforePlannedEndsOn = !transaction.getOccurredOn().after(getSchedule().getEndsOn());
         return identicalNarration && tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
     }
 
     private Amount forecastLinearlyProgressing(Date date) {
-        if (date.after(endsOn)) {
+        if (date.after(getSchedule().getEndsOn())) {
             return getAmount();
-        } else if (date.before(startsOn)) {
+        } else if (date.before(getSchedule().getStartsOn())) {
             return Amount.noAmount();
-        } else if (startsOn.getTime() == endsOn.getTime()) {
+        } else if (getSchedule().getStartsOn().getTime() == getSchedule().getEndsOn().getTime()) {
             return getAmount();
         } else {
-            double durationTransaction = endsOn.getTime() - startsOn.getTime();
-            double durationTillDate = date.getTime() - startsOn.getTime();
+            double durationTransaction = schedule.getEndsOn().getTime() - getSchedule().getStartsOn().getTime();
+            double durationTillDate = date.getTime() - getSchedule().getStartsOn().getTime();
             double percentage = durationTillDate / durationTransaction;
             Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
             return new Amount(partialAmount, getAmount().getCurrency());
