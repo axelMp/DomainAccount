@@ -9,7 +9,7 @@ public interface IPlannedTransaction {
 
     IAccount getCreditor();
 
-    Period getPeriod();
+    Schedule getSchedule();
 
     boolean matchesAnyPerformedTransaction(List<ITransaction> transactions);
 

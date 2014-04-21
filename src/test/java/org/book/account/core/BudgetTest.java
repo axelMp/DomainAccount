@@ -1,8 +1,9 @@
 package org.book.account.core;
 
 import org.book.account.domain.Amount;
-import org.book.account.domain.ExecutionOfPlannedTransaction;
+import org.book.account.domain.ExecutionPolicy;
 import org.book.account.domain.Period;
+import org.book.account.domain.Schedule;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,8 +40,8 @@ public class BudgetTest {
         Date forecastOn = Utilities.today();
         Date beforeToday = Utilities.previousDay(Utilities.today());
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), creditor, debitor);
-        Period period = new Period(Utilities.previousDay(beforeToday), beforeToday);
-        ledger.getBudget().plan("aNarration", period, Utilities.generateRandomAmountInEuro(), creditor, debitor, ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING);
+        Schedule schedule = new Schedule(new Period(Utilities.previousDay(beforeToday), beforeToday), ExecutionPolicy.LINEARLY_PROGRESSING);
+        ledger.getBudget().plan("aNarration", Utilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
     }
@@ -53,8 +54,8 @@ public class BudgetTest {
         Date forecastOn = Utilities.today();
         Date afterForeCastDay = Utilities.nextDay(forecastOn);
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), creditor, debitor);
-        Period period = new Period(afterForeCastDay, Utilities.nextDay(afterForeCastDay));
-        ledger.getBudget().plan("aNarration", period, Utilities.generateRandomAmountInEuro(), creditor, debitor, ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING);
+        Schedule schedule = new Schedule(new Period(afterForeCastDay, Utilities.nextDay(afterForeCastDay)), ExecutionPolicy.LINEARLY_PROGRESSING);
+        ledger.getBudget().plan("aNarration", Utilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
     }
@@ -66,8 +67,8 @@ public class BudgetTest {
         Account debitor = Utilities.generateRandomAccount(ledger);
         Date forecastOn = Utilities.moveDay(20, Utilities.today());
         Amount randomAmount = Utilities.generateRandomAmountInEuro();
-        Period period = new Period(Utilities.nextDay(Utilities.today()), Utilities.previousDay(forecastOn));
-        ledger.getBudget().plan("aNarration", period, randomAmount, creditor, debitor, ExecutionOfPlannedTransaction.SINGLE);
+        Schedule schedule = new Schedule(new Period(Utilities.nextDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.SINGLE);
+        ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
     }
@@ -79,8 +80,8 @@ public class BudgetTest {
         Account debitor = Utilities.generateRandomAccount(ledger);
         Date forecastOn = Utilities.moveDay(20, Utilities.today());
         Amount randomAmount = Utilities.generateRandomAmountInEuro();
-        Period period = new Period(Utilities.nextDay(Utilities.today()), Utilities.previousDay(forecastOn));
-        ledger.getBudget().plan("aNarration", period, randomAmount, creditor, debitor, ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING);
+        Schedule schedule = new Schedule(new Period(Utilities.nextDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.LINEARLY_PROGRESSING);
+        ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
     }
@@ -92,8 +93,8 @@ public class BudgetTest {
         Account debitor = Utilities.generateRandomAccount(ledger);
         Date forecastOn = Utilities.moveDay(20, Utilities.today());
         Amount randomAmount = Utilities.generateRandomAmountInEuro();
-        Period period = new Period(Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn));
-        ledger.getBudget().plan("aNarration", period, randomAmount, creditor, debitor, ExecutionOfPlannedTransaction.SINGLE);
+        Schedule schedule = new Schedule(new Period(Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.SINGLE);
+        ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
     }
@@ -108,8 +109,8 @@ public class BudgetTest {
 
         Amount randomAmount = Utilities.generateRandomAmountInEuro();
         Amount halfOfRandomAmount = new Amount(randomAmount.getCents() / 2, randomAmount.getCurrency());
-        Period period = new Period(planStartsOn, forecastOn);
-        ledger.getBudget().plan("aNarration", period, randomAmount, creditor, debitor, ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING);
+        Schedule schedule = new Schedule(new Period(planStartsOn, forecastOn), ExecutionPolicy.LINEARLY_PROGRESSING);
+        ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), halfOfRandomAmount);
     }
@@ -123,8 +124,8 @@ public class BudgetTest {
         Amount randomAmount = Utilities.generateRandomAmountInEuro();
         Amount anotherRandomAmount = Utilities.generateRandomAmountInEuro();
         String randomNarration = "aNarration";
-        Period period = new Period(Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn));
-        ledger.getBudget().plan(randomNarration, period, randomAmount, creditor, debitor, ExecutionOfPlannedTransaction.SINGLE);
+        Schedule schedule = new Schedule(new Period(Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.SINGLE);
+        ledger.getBudget().plan(randomNarration, randomAmount, creditor, debitor, schedule);
         ledger.book(randomNarration, Utilities.today(), anotherRandomAmount, creditor, debitor);
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
     }
@@ -140,8 +141,8 @@ public class BudgetTest {
         Amount bookedAmount = Utilities.generateRandomAmountInEuro();
         Amount halfPlannedAmount = new Amount(plannedAmount.getCents() / 2, plannedAmount.getCurrency());
         String randomNarration = "aNarration";
-        Period period = new Period(planStartsOn, forecastOn);
-        ledger.getBudget().plan(randomNarration, period, plannedAmount, creditor, debitor, ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING);
+        Schedule schedule = new Schedule(new Period(planStartsOn, forecastOn), ExecutionPolicy.LINEARLY_PROGRESSING);
+        ledger.getBudget().plan(randomNarration, plannedAmount, creditor, debitor, schedule);
         ledger.book(randomNarration, Utilities.moveDay(1, planStartsOn), bookedAmount, creditor, debitor);
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), Amount.add(halfPlannedAmount, bookedAmount));
     }
@@ -153,8 +154,8 @@ public class BudgetTest {
         Account debitor = Utilities.generateRandomAccount(ledger);
         Date forecastOn = Utilities.moveDay(20, Utilities.today());
         Amount randomAmount = Utilities.generateRandomAmountInEuro();
-        Period period = new Period(Utilities.nextDay(Utilities.today()), Utilities.nextDay(forecastOn));
-        ledger.getBudget().plan("aNarration", period, randomAmount, creditor, debitor, ExecutionOfPlannedTransaction.SINGLE);
+        Schedule schedule = new Schedule(new Period(Utilities.nextDay(Utilities.today()), Utilities.nextDay(forecastOn)), ExecutionPolicy.SINGLE);
+        ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
     }
@@ -169,9 +170,9 @@ public class BudgetTest {
         Date planEndsOn = Utilities.moveDay(10, planStartsOn);
         Amount randomAmount = new Amount(2000, Amount.Currency.EUR);
         Amount halfRandomAmount = new Amount(randomAmount.getCents() / 2, randomAmount.getCurrency());
-        Period period = new Period(planStartsOn, planEndsOn);
+        Schedule schedule = new Schedule(new Period(planStartsOn, planEndsOn), ExecutionPolicy.LINEARLY_PROGRESSING);
 
-        ledger.getBudget().plan("aNarration", period, randomAmount, creditor, debitor, ExecutionOfPlannedTransaction.LINEARLY_PROGRESSING);
+        ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), halfRandomAmount);
     }
@@ -184,8 +185,8 @@ public class BudgetTest {
         Date forecastOn = Utilities.today();
         Date beforeToday = Utilities.previousDay(Utilities.today());
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), creditor, debitor);
-        Period period = new Period(Utilities.previousDay(beforeToday), beforeToday);
-        ledger.getBudget().plan("aNarration", period, Utilities.generateRandomAmountInEuro(), creditor, debitor, ExecutionOfPlannedTransaction.SINGLE);
+        Schedule schedule = new Schedule(new Period(Utilities.previousDay(beforeToday), beforeToday), ExecutionPolicy.SINGLE);
+        ledger.getBudget().plan("aNarration", Utilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
     }
@@ -198,8 +199,8 @@ public class BudgetTest {
         Date forecastOn = Utilities.today();
         Date afterForeCastDay = Utilities.nextDay(forecastOn);
         ledger.book("aNarration", forecastOn, Utilities.generateRandomAmountInEuro(), creditor, debitor);
-        Period period = new Period(afterForeCastDay, Utilities.nextDay(afterForeCastDay));
-        ledger.getBudget().plan("aNarration", period, Utilities.generateRandomAmountInEuro(), creditor, debitor, ExecutionOfPlannedTransaction.SINGLE);
+        Schedule schedule = new Schedule(new Period(afterForeCastDay, Utilities.nextDay(afterForeCastDay)), ExecutionPolicy.SINGLE);
+        ledger.getBudget().plan("aNarration", Utilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
     }

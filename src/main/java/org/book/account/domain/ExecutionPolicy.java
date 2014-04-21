@@ -1,6 +1,6 @@
 package org.book.account.domain;
 
-public enum ExecutionOfPlannedTransaction {
+public enum ExecutionPolicy {
     SINGLE,
     LINEARLY_PROGRESSING
 }

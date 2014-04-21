@@ -15,5 +15,5 @@ public interface IBudget {
      */
     Amount forecast(IAccount account, Date forecastOn);
 
-    IPlannedTransaction plan(String narration, Period period, Amount amount, IAccount debitor, IAccount creditor, ExecutionOfPlannedTransaction executionOfPlannedTransaction);
+    IPlannedTransaction plan(String narration, Amount amount, IAccount debitor, IAccount creditor, Schedule schedule);
 }

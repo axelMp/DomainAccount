@@ -72,11 +72,11 @@ class Budget implements IBudget {
         return Amount.add(account.closure(now), expectedClosure);
     }
 
-    public IPlannedTransaction plan(String narration, Period period, Amount amount, IAccount debitor, IAccount creditor, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
+    public IPlannedTransaction plan(String narration, Amount amount, IAccount debitor, IAccount creditor, Schedule schedule) {
         getLedger().assertThatAccountExists((Account) debitor);
         getLedger().assertThatAccountExists((Account) creditor);
 
-        PlannedTransaction newTransaction = new PlannedTransaction(narration, amount, (Account) debitor, (Account) creditor, period, executionOfPlannedTransaction);
+        PlannedTransaction newTransaction = new PlannedTransaction(narration, amount, (Account) debitor, (Account) creditor, schedule);
         plannedTransactions.add(newTransaction);
         return newTransaction;
     }

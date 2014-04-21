@@ -16,36 +16,32 @@ class PlannedTransaction implements IPlannedTransaction {
     @ManyToOne
     @JoinColumn(name = "creditor_id")
     private Account creditor;
-    private Period period;
+    private Schedule schedule;
     private String narration;
     private Amount amount;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "EXECUTION")
-    @Enumerated(EnumType.STRING)
-    private ExecutionOfPlannedTransaction executionOfPlannedTransaction;
 
     // required by hibernate
     PlannedTransaction() {
-
     }
 
-    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Period period, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
+
+    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Schedule schedule) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(creditor, "The creditor account must not be null");
-        Validate.notNull(period, "The period must not be null");
+        Validate.notNull(schedule, "The schedule must not be null");
 
         setNarration(narration);
         setAmount(amount);
         this.debitor = debitor;
         this.creditor = creditor;
-        this.period = period;
-        this.executionOfPlannedTransaction = executionOfPlannedTransaction;
+        this.schedule = schedule;
     }
 
-    public Period getPeriod() {
-        return period;
+    public Schedule getSchedule() {
+        return schedule;
     }
 
     public String getNarration() {
@@ -75,7 +71,7 @@ class PlannedTransaction implements IPlannedTransaction {
     }
 
     public boolean matchesAnyPerformedTransaction(List<ITransaction> transactions) {
-        switch (getExecutionOfPlannedTransaction()) {
+        switch (getSchedule().getExecutionPolicy()) {
             case SINGLE:
                 for (ITransaction transaction : transactions) {
                     if (matchesSinglePlanned(transaction)) {
@@ -86,29 +82,25 @@ class PlannedTransaction implements IPlannedTransaction {
             case LINEARLY_PROGRESSING:
                 return false;
             default:
-                throw new IllegalArgumentException("cannot match transactions for executionOfPlannedTransaction type " + getExecutionOfPlannedTransaction().toString());
+                throw new IllegalArgumentException("cannot match transactions for executionOfPlannedTransaction type " + getSchedule().getExecutionPolicy().toString());
         }
-    }
-
-    public ExecutionOfPlannedTransaction getExecutionOfPlannedTransaction() {
-        return executionOfPlannedTransaction;
     }
 
     private boolean matchesSinglePlanned(ITransaction transaction) {
         boolean identicalNarration = transaction.getNarration().equals(getNarration());
-        return identicalNarration && getPeriod().includes(transaction.getOccurredOn());
+        return identicalNarration && getSchedule().getPeriod().includes(transaction.getOccurredOn());
     }
 
     private Amount forecastLinearlyProgressing(Date date) {
-        if (date.after(getPeriod().getEndsOn())) {
+        if (date.after(getSchedule().getPeriod().getEndsOn())) {
             return getAmount();
-        } else if (date.before(getPeriod().getStartsOn())) {
+        } else if (date.before(getSchedule().getPeriod().getStartsOn())) {
             return Amount.noAmount();
-        } else if (getPeriod().getStartsOn().getTime() == getPeriod().getEndsOn().getTime()) {
+        } else if (getSchedule().getPeriod().getStartsOn().getTime() == getSchedule().getPeriod().getEndsOn().getTime()) {
             return getAmount();
         } else {
-            double durationTransaction = period.getEndsOn().getTime() - getPeriod().getStartsOn().getTime();
-            double durationTillDate = date.getTime() - getPeriod().getStartsOn().getTime();
+            double durationTransaction = getSchedule().getPeriod().getEndsOn().getTime() - getSchedule().getPeriod().getStartsOn().getTime();
+            double durationTillDate = date.getTime() - getSchedule().getPeriod().getStartsOn().getTime();
             double percentage = durationTillDate / durationTransaction;
             Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
             return new Amount(partialAmount, getAmount().getCurrency());
@@ -120,7 +112,7 @@ class PlannedTransaction implements IPlannedTransaction {
     }
 
     private Amount forecastSingle(Period forecastPeriod) {
-        if (forecastPeriod.getEndsOn().after(getPeriod().getStartsOn())) {
+        if (forecastPeriod.getEndsOn().after(getSchedule().getPeriod().getStartsOn())) {
             return getAmount();
         } else {
             return Amount.noAmount();
@@ -129,17 +121,17 @@ class PlannedTransaction implements IPlannedTransaction {
 
     public Amount forecast(Period aPeriod) {
         Validate.notNull(aPeriod, "The period must not be null");
-        if (!getPeriod().overlapsWith(aPeriod)) {
+        if (!getSchedule().getPeriod().overlapsWith(aPeriod)) {
             return Amount.noAmount();
         }
 
-        switch (getExecutionOfPlannedTransaction()) {
+        switch (getSchedule().getExecutionPolicy()) {
             case SINGLE:
                 return forecastSingle(aPeriod);
             case LINEARLY_PROGRESSING:
                 return forecastLinearlyProgressing(aPeriod);
             default:
-                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + getExecutionOfPlannedTransaction().toString());
+                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + getSchedule().getExecutionPolicy().toString());
         }
     }
 }
