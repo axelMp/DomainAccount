@@ -3,8 +3,12 @@ package org.book.account.domain;
 import org.apache.commons.lang3.Validate;
 
 import javax.persistence.Embeddable;
+import java.util.Calendar;
 import java.util.Date;
 
+/*
+Value type for a period of complete day(s).
+ */
 @Embeddable
 public class Period {
     private Date startsOn;
@@ -14,16 +18,35 @@ public class Period {
     Period() {
     }
 
-    // TODO normalize on start and end of DAY
     public Period(Date startsOn, Date endsOn) {
         Validate.notNull(startsOn, "The startsOn date must not be null");
         Validate.notNull(endsOn, "The endsOn on must not be null");
         if (startsOn.after(endsOn)) {
-            throw new IllegalArgumentException("planned transaction should have a start date before the given end date");
+            throw new IllegalArgumentException("period should have a start date before the given end date");
         }
 
-        this.startsOn = startsOn;
-        this.endsOn = endsOn;
+        this.startsOn = startOfDay(startsOn);
+        this.endsOn = endOfDay(endsOn);
+    }
+
+    public static Date startOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        return calendar.getTime();
+    }
+
+    public static Date endOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 999);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        return calendar.getTime();
     }
 
     public boolean includes(Date aDate) {
