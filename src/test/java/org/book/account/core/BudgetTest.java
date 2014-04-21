@@ -28,7 +28,7 @@ public class BudgetTest {
         Account anAccount = Utilities.generateRandomAccount(ledger);
         Date dateOfClosure = new Date();
 
-        Assert.assertEquals(anAccount.forecast(dateOfClosure), Amount.noAmount());
+        Assert.assertEquals(ledger.getBudget().forecast(anAccount, dateOfClosure), Amount.noAmount());
     }
 
     @Test

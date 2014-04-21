@@ -12,6 +12,5 @@ public interface IAccount {
 
     String getName();
 
-
     List<IPlannedTransaction> getPlannedTransactions();
 }
