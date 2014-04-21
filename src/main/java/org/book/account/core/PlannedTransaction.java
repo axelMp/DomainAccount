@@ -26,14 +26,15 @@ class PlannedTransaction implements IPlannedTransaction {
     PlannedTransaction() {
     }
 
-
     PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Schedule schedule) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(creditor, "The creditor account must not be null");
         Validate.notNull(schedule, "The schedule must not be null");
+        Validate.notNull(narration, "The narration must not be null");
+        Validate.notNull(amount, "The amount must not be null");
 
-        setNarration(narration);
-        setAmount(amount);
+        this.narration = narration;
+        this.amount = amount;
         this.debitor = debitor;
         this.creditor = creditor;
         this.schedule = schedule;
@@ -47,18 +48,8 @@ class PlannedTransaction implements IPlannedTransaction {
         return narration;
     }
 
-    public void setNarration(String narration) {
-        Validate.notNull(narration, "The narration must not be null");
-        this.narration = narration;
-    }
-
     private Amount getAmount() {
         return amount;
-    }
-
-    public void setAmount(Amount amount) {
-        Validate.notNull(amount, "The amount must not be null");
-        this.amount = amount;
     }
 
     public Account getDebitor() {

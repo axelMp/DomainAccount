@@ -58,11 +58,11 @@ class Budget implements IBudget {
 
         Amount expectedClosure = Amount.noAmount();
         Period forecastPeriod = new Period(now, forecastOn);
-        for (IPlannedTransaction plannedTransaction : ((Account) account).getPlannedTransactions()) {
+        for (IPlannedTransaction plannedTransaction : account.getPlannedTransactions()) {
             if (!plannedTransaction.matchesAnyPerformedTransaction(transactions)) {
                 Amount forecastOfPlannedTransaction = plannedTransaction.forecast(forecastPeriod);
 
-                if (((Account) account).equals(plannedTransaction.getCreditor())) {
+                if (account.equals(plannedTransaction.getCreditor())) {
                     expectedClosure = Amount.add(expectedClosure, forecastOfPlannedTransaction);
                 } else {
                     expectedClosure = Amount.subtract(expectedClosure, forecastOfPlannedTransaction);
