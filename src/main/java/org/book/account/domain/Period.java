@@ -3,6 +3,7 @@ package org.book.account.domain;
 import org.apache.commons.lang3.Validate;
 
 import javax.persistence.Embeddable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -49,6 +50,16 @@ public class Period {
         return calendar.getTime();
     }
 
+    public static Period overlap(Period aPeriod, Period anotherPeriod) {
+        Validate.notNull(aPeriod, "The anPeriod date must not be null");
+        Validate.notNull(anotherPeriod, "The anotherPeriod on must not be null");
+        Validate.isTrue(aPeriod.overlapsWith(anotherPeriod), "periods should overlap:" + aPeriod.toString() + " and " + anotherPeriod.toString());
+
+        Date from = aPeriod.getStartsOn().after(anotherPeriod.getStartsOn()) ? aPeriod.getStartsOn() : anotherPeriod.getStartsOn();
+        Date until = aPeriod.getEndsOn().before(anotherPeriod.getEndsOn()) ? aPeriod.getEndsOn() : anotherPeriod.getEndsOn();
+        return new Period(from, until);
+    }
+
     public boolean includes(Date aDate) {
         boolean tookPlaceAfterPlannedStartsOn = !aDate.before(getStartsOn());
         boolean tookPlaceBeforePlannedEndsOn = !aDate.after(getEndsOn());
@@ -67,5 +78,20 @@ public class Period {
 
     public Date getEndsOn() {
         return endsOn;
+    }
+
+    public int numberDays() {
+        // difference at end of day are whole days
+        long millisecondsAtEndOfLastDay = getEndsOn().getTime();
+        long millisecondsAtEndOfFirstDay = endOfDay(getStartsOn()).getTime();
+        long millisecondsPerDay = 24 * 60 * 60 * 1000;
+        // make up for missing first day
+        return 1 + (int) ((millisecondsAtEndOfLastDay - millisecondsAtEndOfFirstDay) / millisecondsPerDay);
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        return sdf.format(getStartsOn()) + " - " + sdf.format(getEndsOn());
     }
 }

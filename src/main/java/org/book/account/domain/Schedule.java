@@ -69,10 +69,7 @@ public class Schedule {
             return 0.0;
         }
 
-        // Calculate common period
-        Date from = period.getStartsOn().after(getPeriod().getStartsOn()) ? period.getStartsOn() : getPeriod().getStartsOn();
-        Date until = period.getEndsOn().before(getPeriod().getEndsOn()) ? period.getEndsOn() : getPeriod().getEndsOn();
-        return (until.getTime() - from.getTime()) / (getPeriod().getEndsOn().getTime() - getPeriod().getStartsOn().getTime());
+        return ((double) Period.overlap(period, getPeriod()).numberDays()) / ((double) getPeriod().numberDays());
     }
 
     public boolean mayMatchWithIndividualTransaction() {
