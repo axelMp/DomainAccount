@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "budget")
-public class Budget implements IBudget {
+class Budget implements IBudget {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "planned_transactions",
@@ -25,7 +25,7 @@ public class Budget implements IBudget {
     private Ledger ledger;
 
     // required by hibernate
-    public Budget() {
+    Budget() {
 
     }
 

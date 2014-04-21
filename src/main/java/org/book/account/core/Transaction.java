@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "transaction")
-public class Transaction implements ITransaction {
+class Transaction implements ITransaction {
     @ManyToOne
     @JoinColumn(name = "debitor_id")
     private Account debitor;
@@ -25,7 +25,7 @@ public class Transaction implements ITransaction {
     private Long id;
 
     // for hibernate
-    public Transaction() {
+    Transaction() {
     }
 
     Transaction(String narration, Amount amount, Account debitor, Account creditor, Date occurredOn) {

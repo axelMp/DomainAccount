@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "account")
-public class Account implements IAccount {
+class Account implements IAccount {
     private String name;
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
@@ -23,7 +23,7 @@ public class Account implements IAccount {
     private Long id;
 
     // required by hibernate
-    public Account() {
+    Account() {
 
     }
 

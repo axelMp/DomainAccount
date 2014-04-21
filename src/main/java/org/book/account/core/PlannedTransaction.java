@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "planned_transaction")
-public class PlannedTransaction implements IPlannedTransaction {
+class PlannedTransaction implements IPlannedTransaction {
     @ManyToOne
     @JoinColumn(name = "debitor_id")
     private Account debitor;
@@ -31,7 +31,7 @@ public class PlannedTransaction implements IPlannedTransaction {
     private ExecutionOfPlannedTransaction executionOfPlannedTransaction;
 
     // required by hibernate
-    public PlannedTransaction() {
+    PlannedTransaction() {
 
     }
 

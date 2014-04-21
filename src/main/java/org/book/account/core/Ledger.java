@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+// public as it's an aggregate root
 @Entity
 @Table(name = "ledger")
 public class Ledger implements ILedger {
@@ -33,7 +34,7 @@ public class Ledger implements ILedger {
     private Budget budget;
 
     // required by hibernate
-    public Ledger() {
+    Ledger() {
 
     }
 
