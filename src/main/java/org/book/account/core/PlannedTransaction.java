@@ -31,15 +31,16 @@ class PlannedTransaction implements IPlannedTransaction {
 
     }
 
-    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Date startsOn, Date endsOn, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
+    PlannedTransaction(String narration, Amount amount, Account debitor, Account creditor, Period period, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
         Validate.notNull(debitor, "The debitor account must not be null");
         Validate.notNull(creditor, "The creditor account must not be null");
+        Validate.notNull(period, "The period must not be null");
 
         setNarration(narration);
         setAmount(amount);
         this.debitor = debitor;
         this.creditor = creditor;
-        this.period = new Period(startsOn, endsOn);
+        this.period = period;
         this.executionOfPlannedTransaction = executionOfPlannedTransaction;
     }
 
