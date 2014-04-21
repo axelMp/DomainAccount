@@ -42,6 +42,10 @@ class Budget implements IBudget {
         return new LinkedList<IPlannedTransaction>(plannedTransactions);
     }
 
+    public Amount forecast(IAccount account, Date forecastOn) {
+        return ((Account) account).forecast(forecastOn);
+    }
+
     public IPlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, IAccount debitor, IAccount creditor, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
         getLedger().assertThatAccountExists((Account) debitor);
         getLedger().assertThatAccountExists((Account) creditor);
