@@ -33,11 +33,45 @@ public class Schedule {
         return period.includes(date);
     }
 
+    public boolean overlapsWith(Period period) {
+        return period.overlapsWith(period);
+    }
+
     public Period getPeriod() {
         return period;
     }
 
     public ExecutionPolicy getExecutionPolicy() {
         return executionPolicy;
+    }
+
+    public double percentageOfScheduleTookPlace(Period period) {
+        switch (getExecutionPolicy()) {
+            case SINGLE:
+                return percentageOfSingleSchedule(period);
+            case LINEARLY_PROGRESSING:
+                //return false;
+            default:
+                throw new IllegalArgumentException("unknown policy " + getExecutionPolicy().toString());
+        }
+    }
+
+    private double percentageOfSingleSchedule(Period period) {
+        if (period.overlapsWith(getPeriod())) {
+            return 1.0;
+        } else {
+            return 0.0;
+        }
+    }
+
+    public boolean mayMatchWithIndividualTransaction() {
+        switch (getExecutionPolicy()) {
+            case SINGLE:
+                return true;
+            case LINEARLY_PROGRESSING:
+                return false;
+            default:
+                throw new IllegalArgumentException("unknown policy " + getExecutionPolicy().toString());
+        }
     }
 }

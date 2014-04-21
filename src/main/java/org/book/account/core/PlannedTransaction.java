@@ -71,24 +71,18 @@ class PlannedTransaction implements IPlannedTransaction {
     }
 
     public boolean matchesAnyPerformedTransaction(List<ITransaction> transactions) {
-        switch (getSchedule().getExecutionPolicy()) {
-            case SINGLE:
-                for (ITransaction transaction : transactions) {
-                    if (matchesSinglePlanned(transaction)) {
-                        return true;
-                    }
+        if (getSchedule().mayMatchWithIndividualTransaction()) {
+            for (ITransaction transaction : transactions) {
+                if (getSchedule().includes(transaction.getOccurredOn()) && matches(transaction)) {
+                    return true;
                 }
-                return false;
-            case LINEARLY_PROGRESSING:
-                return false;
-            default:
-                throw new IllegalArgumentException("cannot match transactions for executionOfPlannedTransaction type " + getSchedule().getExecutionPolicy().toString());
+            }
         }
+        return false;
     }
 
-    private boolean matchesSinglePlanned(ITransaction transaction) {
-        boolean identicalNarration = transaction.getNarration().equals(getNarration());
-        return identicalNarration && getSchedule().includes(transaction.getOccurredOn());
+    private boolean matches(ITransaction transaction) {
+        return transaction.getNarration().equals(getNarration());
     }
 
     private Amount forecastLinearlyProgressing(Date date) {
@@ -111,23 +105,17 @@ class PlannedTransaction implements IPlannedTransaction {
         return Amount.subtract(forecastLinearlyProgressing(forecastPeriod.getEndsOn()), forecastLinearlyProgressing(forecastPeriod.getStartsOn()));
     }
 
-    private Amount forecastSingle(Period forecastPeriod) {
-        if (forecastPeriod.getEndsOn().after(getSchedule().getPeriod().getStartsOn())) {
-            return getAmount();
-        } else {
-            return Amount.noAmount();
-        }
-    }
-
     public Amount forecast(Period aPeriod) {
         Validate.notNull(aPeriod, "The period must not be null");
-        if (!getSchedule().getPeriod().overlapsWith(aPeriod)) {
+        if (!getSchedule().overlapsWith(aPeriod)) {
             return Amount.noAmount();
         }
 
         switch (getSchedule().getExecutionPolicy()) {
             case SINGLE:
-                return forecastSingle(aPeriod);
+                double percentage = getSchedule().percentageOfScheduleTookPlace(aPeriod);
+                Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
+                return new Amount(partialAmount, getAmount().getCurrency());
             case LINEARLY_PROGRESSING:
                 return forecastLinearlyProgressing(aPeriod);
             default:
