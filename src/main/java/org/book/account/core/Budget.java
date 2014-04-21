@@ -1,9 +1,12 @@
 package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.book.account.domain.*;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "budget")
 class Budget implements IBudget {
+    private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "planned_transactions",
@@ -44,13 +48,19 @@ class Budget implements IBudget {
 
     public Amount forecast(IAccount account, Date forecastOn) {
         Validate.notNull(forecastOn, "forecastOn cannot be null");
+        Date now = new Date();
+        if (forecastOn.before(now)) {
+            SimpleDateFormat sdf = new SimpleDateFormat();
+            logger.info("trying to forecast on a date (" + sdf.format(forecastOn) + ") before now (" + sdf.format(now) + "). Returning the closure at that time (the best forecast of what closure the account had then).");
+            return account.closure(forecastOn);
+        }
         List<ITransaction> transactions = account.getTransactions();
-        Date today = new Date();
-        Amount expectedClosure = Amount.noAmount();
 
+        Amount expectedClosure = Amount.noAmount();
+        Period forecastPeriod = new Period(now, forecastOn);
         for (IPlannedTransaction plannedTransaction : ((Account) account).getPlannedTransactions()) {
             if (!plannedTransaction.matchesAnyPerformedTransaction(transactions)) {
-                Amount forecastOfPlannedTransaction = plannedTransaction.forecast(today, forecastOn);
+                Amount forecastOfPlannedTransaction = plannedTransaction.forecast(forecastPeriod);
 
                 if (((Account) account).equals(plannedTransaction.getCreditor())) {
                     expectedClosure = Amount.add(expectedClosure, forecastOfPlannedTransaction);
@@ -59,7 +69,7 @@ class Budget implements IBudget {
                 }
             }
         }
-        return Amount.add(account.closure(today), expectedClosure);
+        return Amount.add(account.closure(now), expectedClosure);
     }
 
     public IPlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, IAccount debitor, IAccount creditor, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {

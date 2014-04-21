@@ -114,31 +114,29 @@ class PlannedTransaction implements IPlannedTransaction {
         }
     }
 
-    private Amount forecastLinearlyProgressing(Date from, Date until) {
-        return Amount.subtract(forecastLinearlyProgressing(until), forecastLinearlyProgressing(from));
+    private Amount forecastLinearlyProgressing(Period forecastPeriod) {
+        return Amount.subtract(forecastLinearlyProgressing(forecastPeriod.getEndsOn()), forecastLinearlyProgressing(forecastPeriod.getStartsOn()));
     }
 
-    private Amount forecastSingle(Date from, Date until) {
-        if (until.after(getPeriod().getStartsOn())) {
+    private Amount forecastSingle(Period forecastPeriod) {
+        if (forecastPeriod.getEndsOn().after(getPeriod().getStartsOn())) {
             return getAmount();
         } else {
             return Amount.noAmount();
         }
     }
 
-    public Amount forecast(Date from, Date until) {
-        Validate.notNull(from, "The from date must not be null");
-        Validate.notNull(until, "The until date must not be null");
-        Period forecastPeriod = new Period(from, until);
-        if (!getPeriod().overlapsWith(forecastPeriod)) {
+    public Amount forecast(Period aPeriod) {
+        Validate.notNull(aPeriod, "The period must not be null");
+        if (!getPeriod().overlapsWith(aPeriod)) {
             return Amount.noAmount();
         }
 
         switch (getExecutionOfPlannedTransaction()) {
             case SINGLE:
-                return forecastSingle(from, until);
+                return forecastSingle(aPeriod);
             case LINEARLY_PROGRESSING:
-                return forecastLinearlyProgressing(from, until);
+                return forecastLinearlyProgressing(aPeriod);
             default:
                 throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + getExecutionOfPlannedTransaction().toString());
         }
