@@ -94,4 +94,20 @@ public class Period {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return sdf.format(getStartsOn()) + " - " + sdf.format(getEndsOn());
     }
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) return true;
+
+        if (!(that instanceof Period)) return false;
+
+        return getStartsOn().equals(((Period) that).getStartsOn()) &&
+                getEndsOn().equals(((Period) that).getEndsOn());
+    }
+
+    @Override
+    public int hashCode() {
+        return getStartsOn().hashCode();
+    }
+
 }

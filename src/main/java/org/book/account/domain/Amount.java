@@ -17,8 +17,7 @@ public class Amount {
     private Currency currency;
 
     // required by hibernate
-    public Amount() {
-
+    Amount() {
     }
 
     public Amount(Integer cents, Currency currency) {

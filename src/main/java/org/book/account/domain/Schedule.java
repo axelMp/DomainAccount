@@ -82,4 +82,24 @@ public class Schedule {
                 throw new IllegalArgumentException("unhandled policy " + getExecutionPolicy().toString());
         }
     }
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) return true;
+
+        if (!(that instanceof Schedule)) return false;
+
+        return getPeriod().equals(((Schedule) that).getPeriod()) &&
+                getExecutionPolicy().equals(((Schedule) that).getExecutionPolicy());
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCodePeriod = getPeriod().hashCode();
+        if (getExecutionPolicy().equals(ExecutionPolicy.LINEARLY_PROGRESSING)) {
+            return hashCodePeriod + 1;
+        } else {
+            return hashCodePeriod;
+        }
+    }
 }
