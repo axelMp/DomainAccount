@@ -1,6 +1,5 @@
 package org.book.account.core;
 
-import org.apache.commons.lang3.Validate;
 import org.book.account.domain.*;
 
 import javax.persistence.*;
@@ -46,27 +45,6 @@ class Account implements IAccount {
         }
 
         return plannedTransactions;
-    }
-
-    public Amount forecast(Date forecastOn) {
-        Validate.notNull(forecastOn, "forecastOn cannot be null");
-        List<ITransaction> transactions = getTransactions();
-        Date today = new Date();
-        Amount currentClosure = closure(today);
-        Amount expectedClosure = Amount.noAmount();
-
-        for (IPlannedTransaction plannedTransaction : getPlannedTransactions()) {
-            if (!plannedTransaction.matchesAnyPerformedTransaction(transactions)) {
-                Amount forecastOfPlannedTransaction = plannedTransaction.forecast(today, forecastOn);
-
-                if (equals(plannedTransaction.getCreditor())) {
-                    expectedClosure = Amount.add(expectedClosure, forecastOfPlannedTransaction);
-                } else {
-                    expectedClosure = Amount.subtract(expectedClosure, forecastOfPlannedTransaction);
-                }
-            }
-        }
-        return Amount.add(currentClosure, expectedClosure);
     }
 
     public Amount closure(Date date) {

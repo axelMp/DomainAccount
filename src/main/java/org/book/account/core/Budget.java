@@ -43,7 +43,23 @@ class Budget implements IBudget {
     }
 
     public Amount forecast(IAccount account, Date forecastOn) {
-        return ((Account) account).forecast(forecastOn);
+        Validate.notNull(forecastOn, "forecastOn cannot be null");
+        List<ITransaction> transactions = account.getTransactions();
+        Date today = new Date();
+        Amount expectedClosure = Amount.noAmount();
+
+        for (IPlannedTransaction plannedTransaction : ((Account) account).getPlannedTransactions()) {
+            if (!plannedTransaction.matchesAnyPerformedTransaction(transactions)) {
+                Amount forecastOfPlannedTransaction = plannedTransaction.forecast(today, forecastOn);
+
+                if (((Account) account).equals(plannedTransaction.getCreditor())) {
+                    expectedClosure = Amount.add(expectedClosure, forecastOfPlannedTransaction);
+                } else {
+                    expectedClosure = Amount.subtract(expectedClosure, forecastOfPlannedTransaction);
+                }
+            }
+        }
+        return Amount.add(account.closure(today), expectedClosure);
     }
 
     public IPlannedTransaction plan(String narration, Date startsOn, Date endsOn, Amount amount, IAccount debitor, IAccount creditor, ExecutionOfPlannedTransaction executionOfPlannedTransaction) {
