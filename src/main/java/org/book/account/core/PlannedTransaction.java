@@ -4,7 +4,6 @@ import org.apache.commons.lang3.Validate;
 import org.book.account.domain.*;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -85,41 +84,14 @@ class PlannedTransaction implements IPlannedTransaction {
         return transaction.getNarration().equals(getNarration());
     }
 
-    private Amount forecastLinearlyProgressing(Date date) {
-        if (date.after(getSchedule().getPeriod().getEndsOn())) {
-            return getAmount();
-        } else if (date.before(getSchedule().getPeriod().getStartsOn())) {
-            return Amount.noAmount();
-        } else if (getSchedule().getPeriod().getStartsOn().getTime() == getSchedule().getPeriod().getEndsOn().getTime()) {
-            return getAmount();
-        } else {
-            double durationTransaction = getSchedule().getPeriod().getEndsOn().getTime() - getSchedule().getPeriod().getStartsOn().getTime();
-            double durationTillDate = date.getTime() - getSchedule().getPeriod().getStartsOn().getTime();
-            double percentage = durationTillDate / durationTransaction;
-            Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
-            return new Amount(partialAmount, getAmount().getCurrency());
-        }
-    }
-
-    private Amount forecastLinearlyProgressing(Period forecastPeriod) {
-        return Amount.subtract(forecastLinearlyProgressing(forecastPeriod.getEndsOn()), forecastLinearlyProgressing(forecastPeriod.getStartsOn()));
-    }
-
     public Amount forecast(Period aPeriod) {
         Validate.notNull(aPeriod, "The period must not be null");
         if (!getSchedule().overlapsWith(aPeriod)) {
             return Amount.noAmount();
         }
 
-        switch (getSchedule().getExecutionPolicy()) {
-            case SINGLE:
-                double percentage = getSchedule().percentageOfScheduleTookPlace(aPeriod);
-                Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
-                return new Amount(partialAmount, getAmount().getCurrency());
-            case LINEARLY_PROGRESSING:
-                return forecastLinearlyProgressing(aPeriod);
-            default:
-                throw new IllegalArgumentException("cannot forecast for executionOfPlannedTransaction type " + getSchedule().getExecutionPolicy().toString());
-        }
+        double percentage = getSchedule().percentageOfScheduleTookPlace(aPeriod);
+        Integer partialAmount = (int) Math.round(percentage * getAmount().getCents());
+        return new Amount(partialAmount, getAmount().getCurrency());
     }
 }

@@ -50,9 +50,9 @@ public class Schedule {
             case SINGLE:
                 return percentageOfSingleSchedule(period);
             case LINEARLY_PROGRESSING:
-                //return false;
+                return percentageOfLinearProgressingSchedule(period);
             default:
-                throw new IllegalArgumentException("unknown policy " + getExecutionPolicy().toString());
+                throw new IllegalArgumentException("unhandled policy " + getExecutionPolicy().toString());
         }
     }
 
@@ -64,6 +64,17 @@ public class Schedule {
         }
     }
 
+    private double percentageOfLinearProgressingSchedule(Period period) {
+        if (!period.overlapsWith(getPeriod())) {
+            return 0.0;
+        }
+
+        // Calculate common period
+        Date from = period.getStartsOn().after(getPeriod().getStartsOn()) ? period.getStartsOn() : getPeriod().getStartsOn();
+        Date until = period.getEndsOn().before(getPeriod().getEndsOn()) ? period.getEndsOn() : getPeriod().getEndsOn();
+        return (until.getTime() - from.getTime()) / (getPeriod().getEndsOn().getTime() - getPeriod().getStartsOn().getTime());
+    }
+
     public boolean mayMatchWithIndividualTransaction() {
         switch (getExecutionPolicy()) {
             case SINGLE:
@@ -71,7 +82,7 @@ public class Schedule {
             case LINEARLY_PROGRESSING:
                 return false;
             default:
-                throw new IllegalArgumentException("unknown policy " + getExecutionPolicy().toString());
+                throw new IllegalArgumentException("unhandled policy " + getExecutionPolicy().toString());
         }
     }
 }
