@@ -1,5 +1,6 @@
 package org.book.account.core;
 
+import org.book.account.Utilities;
 import org.book.account.domain.AccountType;
 import org.book.account.domain.Amount;
 import org.junit.Assert;

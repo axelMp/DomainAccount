@@ -14,6 +14,7 @@ public class Period {
     Period() {
     }
 
+    // TODO normalize on start and end of DAY
     public Period(Date startsOn, Date endsOn) {
         Validate.notNull(startsOn, "The startsOn date must not be null");
         Validate.notNull(endsOn, "The endsOn on must not be null");
