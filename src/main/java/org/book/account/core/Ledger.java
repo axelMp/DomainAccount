@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "ledger")
 public class Ledger implements ILedger {
 
-    private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
+    private static final Logger LOG = LogManager.getLogger(Ledger.class.getName());
     @Column(name = "NAME")
     private String name;
     @OneToMany(cascade = CascadeType.ALL)
@@ -73,15 +73,15 @@ public class Ledger implements ILedger {
 
     void assertThatAccountExists(Account anAccount) {
         if (!accounts.contains(anAccount)) {
-            if (logger.isErrorEnabled()) {
-                logger.error("account " + anAccount.getName() + " unknown");
+            if (LOG.isErrorEnabled()) {
+                LOG.error("account " + anAccount.getName() + " unknown");
 
                 StringBuilder builder = new StringBuilder();
                 for (Account account : accounts) {
                     builder.append(account.getName());
                     builder.append(" ");
                 }
-                logger.error("known accounts are " + builder.toString());
+                LOG.error("known accounts are " + builder.toString());
             }
 
             throw new IllegalArgumentException("Account " + anAccount.getName() + " does not exist");

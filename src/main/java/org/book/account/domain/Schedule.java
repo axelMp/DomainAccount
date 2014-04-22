@@ -74,9 +74,13 @@ public class Schedule {
 
     @Override
     public boolean equals(Object that) {
-        if (this == that) return true;
+        if (this == that) {
+            return true;
+        }
 
-        if (!(that instanceof Schedule)) return false;
+        if (!(that instanceof Schedule)) {
+            return false;
+        }
 
         return getPeriod().equals(((Schedule) that).getPeriod()) &&
                 getExecutionPolicy().equals(((Schedule) that).getExecutionPolicy());

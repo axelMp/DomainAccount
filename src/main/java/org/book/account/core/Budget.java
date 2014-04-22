@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "budget")
 class Budget implements IBudget {
-    private static final Logger logger = LogManager.getLogger(Ledger.class.getName());
+    private static final Logger LOG = LogManager.getLogger(Ledger.class.getName());
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "planned_transactions",
@@ -51,7 +51,7 @@ class Budget implements IBudget {
         Date now = new Date();
         if (forecastOn.before(now)) {
             SimpleDateFormat sdf = new SimpleDateFormat();
-            logger.info("trying to forecast on a date (" + sdf.format(forecastOn) + ") before now (" + sdf.format(now) + "). Returning the closure at that time (the best forecast of what closure the account had then).");
+            LOG.info("trying to forecast on a date (" + sdf.format(forecastOn) + ") before now (" + sdf.format(now) + "). Returning the closure at that time (the best forecast of what closure the account had then).");
             return account.closure(forecastOn);
         }
         List<ITransaction> transactions = account.getTransactions();

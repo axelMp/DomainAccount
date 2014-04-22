@@ -53,9 +53,13 @@ public class Amount {
 
     @Override
     public boolean equals(Object that) {
-        if (this == that) return true;
+        if (this == that) {
+            return true;
+        }
 
-        if (!(that instanceof Amount)) return false;
+        if (!(that instanceof Amount)) {
+            return false;
+        }
 
         return getCurrency().equals(((Amount) that).getCurrency()) &&
                 getCents().equals(((Amount) that).getCents());

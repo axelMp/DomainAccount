@@ -63,7 +63,7 @@ public class Period {
     public boolean includes(Date aDate) {
         boolean tookPlaceAfterPlannedStartsOn = !aDate.before(getStartsOn());
         boolean tookPlaceBeforePlannedEndsOn = !aDate.after(getEndsOn());
-        return (tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn);
+        return tookPlaceAfterPlannedStartsOn && tookPlaceBeforePlannedEndsOn;
     }
 
     public boolean overlapsWith(Period other) {
@@ -97,9 +97,13 @@ public class Period {
 
     @Override
     public boolean equals(Object that) {
-        if (this == that) return true;
+        if (this == that) {
+            return true;
+        }
 
-        if (!(that instanceof Period)) return false;
+        if (!(that instanceof Period)) {
+            return false;
+        }
 
         return getStartsOn().equals(((Period) that).getStartsOn()) &&
                 getEndsOn().equals(((Period) that).getEndsOn());
