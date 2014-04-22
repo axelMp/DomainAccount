@@ -72,17 +72,6 @@ public class Schedule {
         return ((double) Period.overlap(period, getPeriod()).numberDays()) / ((double) getPeriod().numberDays());
     }
 
-    public boolean mayMatchWithIndividualTransaction() {
-        switch (getExecutionPolicy()) {
-            case SINGLE:
-                return true;
-            case LINEARLY_PROGRESSING:
-                return false;
-            default:
-                throw new IllegalArgumentException("unhandled policy " + getExecutionPolicy().toString());
-        }
-    }
-
     @Override
     public boolean equals(Object that) {
         if (this == that) return true;
