@@ -58,8 +58,16 @@ class Budget implements IBudget {
 
         Amount expectedClosure = Amount.noAmount();
         Period forecastPeriod = new Period(now, forecastOn);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
         for (IPlannedTransaction plannedTransaction : account.getPlannedTransactions()) {
-            if (!plannedTransaction.matchesAnyPerformedTransaction(transactions)) {
+            boolean foundMatchingTransaction = false;
+            for (ITransaction transaction : transactions) {
+                if (matchingPolicy.match(transaction, plannedTransaction)) {
+                    foundMatchingTransaction = true;
+                }
+            }
+
+            if (!foundMatchingTransaction) {
                 Amount forecastOfPlannedTransaction = plannedTransaction.forecast(forecastPeriod);
 
                 if (account.equals(plannedTransaction.getCreditor())) {

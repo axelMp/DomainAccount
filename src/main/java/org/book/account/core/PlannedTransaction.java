@@ -1,10 +1,12 @@
 package org.book.account.core;
 
 import org.apache.commons.lang3.Validate;
-import org.book.account.domain.*;
+import org.book.account.domain.Amount;
+import org.book.account.domain.IPlannedTransaction;
+import org.book.account.domain.Period;
+import org.book.account.domain.Schedule;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "planned_transaction")
@@ -58,21 +60,6 @@ class PlannedTransaction implements IPlannedTransaction {
 
     public Account getCreditor() {
         return creditor;
-    }
-
-    public boolean matchesAnyPerformedTransaction(List<ITransaction> transactions) {
-        if (getSchedule().mayMatchWithIndividualTransaction()) {
-            for (ITransaction transaction : transactions) {
-                if (getSchedule().includes(transaction.getOccurredOn()) && matches(transaction)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean matches(ITransaction transaction) {
-        return transaction.getNarration().equals(getNarration());
     }
 
     public Amount forecast(Period aPeriod) {
