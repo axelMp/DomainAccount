@@ -38,7 +38,7 @@ public class Amount {
 
     public static Amount subtract(Amount anAmount, Amount anotherAmount) {
         if (!anAmount.getCurrency().equals(anotherAmount.getCurrency())) {
-            throw new IllegalArgumentException("cannot substract amounts of different currencies (" + anAmount.getCurrency() + " and " + anotherAmount.getCurrency() + ")");
+            throw new IllegalArgumentException("cannot subtract amounts of different currencies (" + anAmount.getCurrency() + " and " + anotherAmount.getCurrency() + ")");
         }
         return new Amount(anAmount.getCents() - anotherAmount.getCents(), anAmount.getCurrency());
     }
