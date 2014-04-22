@@ -14,8 +14,9 @@ public class BudgetTest {
         Ledger ledger = new Ledger("randomName");
         Account anAccount = CoreUtilities.generateRandomAccount(ledger);
         Date dateOfClosure = new Date();
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(anAccount, dateOfClosure), Amount.noAmount());
+        Assert.assertEquals(ledger.getBudget().forecast(anAccount, dateOfClosure, matchingPolicy), Amount.noAmount());
     }
 
     @Test
@@ -26,8 +27,9 @@ public class BudgetTest {
         Date forecastOn = Utilities.today();
         Amount randomAmount = DomainUtilities.generateRandomAmountInEuro();
         ledger.book("aNarration", forecastOn, randomAmount, creditor, debitor);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), debitor.closure(forecastOn));
     }
 
     @Test
@@ -40,8 +42,9 @@ public class BudgetTest {
         ledger.book("aNarration", forecastOn, DomainUtilities.generateRandomAmountInEuro(), creditor, debitor);
         Schedule schedule = new Schedule(new Period(Utilities.previousDay(beforeToday), beforeToday), ExecutionPolicy.LINEARLY_PROGRESSING);
         ledger.getBudget().plan("aNarration", DomainUtilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), debitor.closure(forecastOn));
     }
 
     @Test
@@ -54,8 +57,9 @@ public class BudgetTest {
         ledger.book("aNarration", forecastOn, DomainUtilities.generateRandomAmountInEuro(), creditor, debitor);
         Schedule schedule = new Schedule(new Period(afterForeCastDay, Utilities.nextDay(afterForeCastDay)), ExecutionPolicy.LINEARLY_PROGRESSING);
         ledger.getBudget().plan("aNarration", DomainUtilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), debitor.closure(forecastOn));
     }
 
     @Test
@@ -67,8 +71,9 @@ public class BudgetTest {
         Amount randomAmount = DomainUtilities.generateRandomAmountInEuro();
         Schedule schedule = new Schedule(new Period(Utilities.nextDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.SINGLE);
         ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), randomAmount);
     }
 
     @Test
@@ -80,8 +85,9 @@ public class BudgetTest {
         Amount randomAmount = DomainUtilities.generateRandomAmountInEuro();
         Schedule schedule = new Schedule(new Period(Utilities.nextDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.LINEARLY_PROGRESSING);
         ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), randomAmount);
     }
 
     @Test
@@ -93,8 +99,9 @@ public class BudgetTest {
         Amount randomAmount = DomainUtilities.generateRandomAmountInEuro();
         Schedule schedule = new Schedule(new Period(Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.SINGLE);
         ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), randomAmount);
     }
 
     @Test
@@ -109,8 +116,9 @@ public class BudgetTest {
         Amount halfOfRandomAmount = new Amount((1 + randomAmount.getCents()) / 2, randomAmount.getCurrency());
         Schedule schedule = new Schedule(new Period(planStartsOn, forecastOn), ExecutionPolicy.LINEARLY_PROGRESSING);
         ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(halfOfRandomAmount, ledger.getBudget().forecast(debitor, forecastOn));
+        Assert.assertEquals(halfOfRandomAmount, ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy));
     }
 
     @Test
@@ -125,7 +133,9 @@ public class BudgetTest {
         Schedule schedule = new Schedule(new Period(Utilities.previousDay(Utilities.today()), Utilities.previousDay(forecastOn)), ExecutionPolicy.SINGLE);
         ledger.getBudget().plan(randomNarration, randomAmount, creditor, debitor, schedule);
         ledger.book(randomNarration, Utilities.today(), anotherRandomAmount, creditor, debitor);
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
+
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), debitor.closure(forecastOn));
     }
 
     @Test
@@ -142,8 +152,9 @@ public class BudgetTest {
         Schedule schedule = new Schedule(new Period(planStartsOn, forecastOn), ExecutionPolicy.LINEARLY_PROGRESSING);
         ledger.getBudget().plan(randomNarration, plannedAmount, creditor, debitor, schedule);
         ledger.book(randomNarration, Utilities.moveDay(1, planStartsOn), bookedAmount, creditor, debitor);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), Amount.add(halfPlannedAmount, bookedAmount));
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), Amount.add(halfPlannedAmount, bookedAmount));
     }
 
     @Test
@@ -155,8 +166,9 @@ public class BudgetTest {
         Amount randomAmount = DomainUtilities.generateRandomAmountInEuro();
         Schedule schedule = new Schedule(new Period(Utilities.nextDay(Utilities.today()), Utilities.nextDay(forecastOn)), ExecutionPolicy.SINGLE);
         ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), randomAmount);
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), randomAmount);
     }
 
     @Test
@@ -170,10 +182,11 @@ public class BudgetTest {
         Amount randomAmount = new Amount(2000, Amount.Currency.EUR);
         Amount halfRandomAmount = new Amount(randomAmount.getCents() / 2, randomAmount.getCurrency());
         Schedule schedule = new Schedule(new Period(planStartsOn, planEndsOn), ExecutionPolicy.LINEARLY_PROGRESSING);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
         ledger.getBudget().plan("aNarration", randomAmount, creditor, debitor, schedule);
 
-        Assert.assertEquals(halfRandomAmount, ledger.getBudget().forecast(debitor, forecastOn));
+        Assert.assertEquals(halfRandomAmount, ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy));
     }
 
     @Test
@@ -186,8 +199,9 @@ public class BudgetTest {
         ledger.book("aNarration", forecastOn, DomainUtilities.generateRandomAmountInEuro(), creditor, debitor);
         Schedule schedule = new Schedule(new Period(Utilities.previousDay(beforeToday), beforeToday), ExecutionPolicy.SINGLE);
         ledger.getBudget().plan("aNarration", DomainUtilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(debitor.closure(forecastOn), ledger.getBudget().forecast(debitor, forecastOn));
+        Assert.assertEquals(debitor.closure(forecastOn), ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy));
     }
 
     @Test
@@ -200,7 +214,8 @@ public class BudgetTest {
         ledger.book("aNarration", forecastOn, DomainUtilities.generateRandomAmountInEuro(), creditor, debitor);
         Schedule schedule = new Schedule(new Period(afterForeCastDay, Utilities.nextDay(afterForeCastDay)), ExecutionPolicy.SINGLE);
         ledger.getBudget().plan("aNarration", DomainUtilities.generateRandomAmountInEuro(), creditor, debitor, schedule);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
 
-        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn), debitor.closure(forecastOn));
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), debitor.closure(forecastOn));
     }
 }

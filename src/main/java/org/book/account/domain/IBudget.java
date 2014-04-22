@@ -8,12 +8,8 @@ public interface IBudget {
 
     /**
      * Forecasts closure of account based on currently known and planned transactions
-     *
-     * @param account    account to forecast
-     * @param forecastOn forecast date
-     * @return forecast amount for given account
      */
-    Amount forecast(IAccount account, Date forecastOn);
+    Amount forecast(IAccount account, Date forecastOn, MatchingPolicy matchingPolicy);
 
     IPlannedTransaction plan(String narration, Amount amount, IAccount debitor, IAccount creditor, Schedule schedule);
 }

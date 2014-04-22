@@ -46,7 +46,7 @@ class Budget implements IBudget {
         return new LinkedList<IPlannedTransaction>(plannedTransactions);
     }
 
-    public Amount forecast(IAccount account, Date forecastOn) {
+    public Amount forecast(IAccount account, Date forecastOn, MatchingPolicy matchingPolicy) {
         Validate.notNull(forecastOn, "forecastOn cannot be null");
         Date now = new Date();
         if (forecastOn.before(now)) {
@@ -58,7 +58,6 @@ class Budget implements IBudget {
 
         Amount expectedClosure = Amount.noAmount();
         Period forecastPeriod = new Period(now, forecastOn);
-        MatchingPolicy matchingPolicy = new MatchingPolicy();
         for (IPlannedTransaction plannedTransaction : account.getPlannedTransactions()) {
             boolean foundMatchingTransaction = false;
             for (ITransaction transaction : transactions) {
