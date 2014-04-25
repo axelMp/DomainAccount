@@ -10,4 +10,6 @@ public interface IPlannedTransaction {
     Schedule getSchedule();
 
     Amount forecast(Period aPeriod);
+
+    Long getId();
 }

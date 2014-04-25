@@ -62,6 +62,10 @@ class PlannedTransaction implements IPlannedTransaction {
         return creditor;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Amount forecast(Period aPeriod) {
         Validate.notNull(aPeriod, "The period must not be null");
         if (!getSchedule().overlapsWith(aPeriod)) {
