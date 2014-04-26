@@ -20,6 +20,62 @@ public class AccountTest {
     }
 
     @Test
+    public void noAssociatedTransactions_ClosedWithEmptyAmountRelativeToOtherAccount() {
+        Ledger ledger = new Ledger("randomName");
+        final String anAccountName = "anAccountName";
+
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.ASSET);
+
+        Assert.assertEquals(anAccount.closure(new Date(), CoreUtilities.generateRandomAccount(ledger)), Amount.noAmount());
+    }
+
+    @Test
+    public void oneCreditedTransactionOnDateOfClosure_ClosedWithNegativeAmountRelativeToOtherAccount() {
+        Ledger ledger = new Ledger("randomName");
+        final String anAccountName = "anAccountName";
+        final String anotherAccountName = "anotherAccountName";
+        Date randomDay = new Date();
+        int randomCents = 3849;
+        Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
+        Amount negativeRandomAmount = new Amount(-randomCents, Amount.Currency.EUR);
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.INCOME);
+        Account anotherAccount = ledger.createAccount(anotherAccountName, AccountType.INCOME);
+
+        ledger.book("aNarration", randomDay, randomAmount, anAccount, anotherAccount);
+        Assert.assertEquals(anAccount.closure(randomDay, anotherAccount), negativeRandomAmount);
+    }
+
+    @Test
+    public void oneCreditedTransactionToRandomAccountOnDateOfClosure_ClosedNoAmountRelativeToOtherAccount() {
+        Ledger ledger = new Ledger("randomName");
+        final String anAccountName = "anAccountName";
+        final String anotherAccountName = "anotherAccountName";
+        Date randomDay = new Date();
+        int randomCents = 3849;
+        Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.INCOME);
+        Account anotherAccount = ledger.createAccount(anotherAccountName, AccountType.INCOME);
+
+        ledger.book("aNarration", randomDay, randomAmount, anAccount, CoreUtilities.generateRandomAccount(ledger));
+        Assert.assertEquals(anAccount.closure(randomDay, anotherAccount), Amount.noAmount());
+    }
+
+    @Test
+    public void oneCreditedTransactionAfterDateOfClosure_ClosedWithNoAmountRelativeToOtherAccount() {
+        Ledger ledger = new Ledger("randomName");
+        final String anAccountName = "anAccountName";
+        final String anotherAccountName = "anotherAccountName";
+        Date randomDay = new Date();
+        int randomCents = 3849;
+        Amount randomAmount = new Amount(randomCents, Amount.Currency.EUR);
+        Account anAccount = ledger.createAccount(anAccountName, AccountType.INCOME);
+        Account anotherAccount = ledger.createAccount(anotherAccountName, AccountType.INCOME);
+
+        ledger.book("aNarration", randomDay, randomAmount, anAccount, anotherAccount);
+        Assert.assertEquals(anAccount.closure(Utilities.previousDay(randomDay), anotherAccount), Amount.noAmount());
+    }
+
+    @Test
     public void oneCreditedTransactionOnDateOfClosure_ClosedWithNegativeAmount() {
         Ledger ledger = new Ledger("randomName");
         final String anAccountName = "anAccountName";

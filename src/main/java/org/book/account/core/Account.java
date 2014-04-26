@@ -1,5 +1,6 @@
 package org.book.account.core;
 
+import org.apache.commons.lang3.Validate;
 import org.book.account.domain.*;
 
 import javax.persistence.*;
@@ -47,15 +48,35 @@ class Account implements IAccount {
         return plannedTransactions;
     }
 
+    private Amount sum(ITransaction aTransaction, Amount currentSum) {
+        if (aTransaction.getDebitor().equals(this)) {
+            return Amount.subtract(currentSum, aTransaction.getAmount());
+        } else {
+            return Amount.add(currentSum, aTransaction.getAmount());
+        }
+    }
+
+    public Amount closure(Date date, IAccount relativeTo) {
+        Validate.notNull(date, "date cannot be null");
+        Validate.notNull(relativeTo, "relativeTo cannot be null");
+
+        Amount result = Amount.noAmount();
+        for (ITransaction aTransaction : getTransactions()) {
+            if (aTransaction.getCreditor().equals(relativeTo) || aTransaction.getDebitor().equals(relativeTo)) {
+                if (aTransaction.getOccurredOn().before(date) || aTransaction.getOccurredOn().equals(date)) {
+                    result = sum(aTransaction, result);
+                }
+            }
+        }
+        return result;
+    }
+
     public Amount closure(Date date) {
+        Validate.notNull(date, "date cannot be null");
         Amount result = Amount.noAmount();
         for (ITransaction aTransaction : getTransactions()) {
             if (aTransaction.getOccurredOn().before(date) || aTransaction.getOccurredOn().equals(date)) {
-                if (aTransaction.getDebitor().equals(this)) {
-                    result = Amount.subtract(result, aTransaction.getAmount());
-                } else {
-                    result = Amount.add(result, aTransaction.getAmount());
-                }
+                result = sum(aTransaction, result);
             }
         }
         return result;
