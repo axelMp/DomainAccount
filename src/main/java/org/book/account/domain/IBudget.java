@@ -11,5 +11,11 @@ public interface IBudget {
      */
     Amount forecast(IAccount account, Date forecastOn, MatchingPolicy matchingPolicy);
 
+    /**
+     * Forecasts closure of account based on currently known and planned transactions involving the specified account
+     */
+    Amount forecast(IAccount account, IAccount relativeTo, Date forecastOn, MatchingPolicy matchingPolicy);
+
+
     IPlannedTransaction plan(String narration, Amount amount, IAccount debitor, IAccount creditor, Schedule schedule);
 }

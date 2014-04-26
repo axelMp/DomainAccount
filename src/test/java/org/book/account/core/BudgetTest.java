@@ -20,6 +20,16 @@ public class BudgetTest {
     }
 
     @Test
+    public void borderCase_noAssociatedTransactions_forecastsRelativeToOtherAccountEmptyAmount() {
+        Ledger ledger = new Ledger("randomName");
+        Account anAccount = CoreUtilities.generateRandomAccount(ledger);
+        Date dateOfClosure = new Date();
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
+
+        Assert.assertEquals(ledger.getBudget().forecast(anAccount, CoreUtilities.generateRandomAccount(ledger), dateOfClosure, matchingPolicy), Amount.noAmount());
+    }
+
+    @Test
     public void noAssociatedPlannedTransactions_forecastsIdenticalToClosure() {
         Ledger ledger = new Ledger("randomName");
         Account creditor = CoreUtilities.generateRandomAccount(ledger);
@@ -30,6 +40,20 @@ public class BudgetTest {
         MatchingPolicy matchingPolicy = new MatchingPolicy();
 
         Assert.assertEquals(ledger.getBudget().forecast(debitor, forecastOn, matchingPolicy), debitor.closure(forecastOn));
+    }
+
+
+    @Test
+    public void noAssociatedPlannedTransactions_forecastsRelativeToOtherAccountIdenticalToClosure() {
+        Ledger ledger = new Ledger("randomName");
+        Account creditor = CoreUtilities.generateRandomAccount(ledger);
+        Account debitor = CoreUtilities.generateRandomAccount(ledger);
+        Date forecastOn = Utilities.today();
+        Amount randomAmount = DomainUtilities.generateRandomAmountInEuro();
+        ledger.book("aNarration", forecastOn, randomAmount, creditor, debitor);
+        MatchingPolicy matchingPolicy = new MatchingPolicy();
+
+        Assert.assertEquals(ledger.getBudget().forecast(debitor, creditor, forecastOn, matchingPolicy), debitor.closure(forecastOn, creditor));
     }
 
     @Test

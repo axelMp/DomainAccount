@@ -46,16 +46,47 @@ class Budget implements IBudget {
         return new LinkedList<IPlannedTransaction>(plannedTransactions);
     }
 
-    public Amount forecast(IAccount account, Date forecastOn, MatchingPolicy matchingPolicy) {
+    public Amount forecast(IAccount account, IAccount relativeTo, Date forecastOn, MatchingPolicy matchingPolicy) {
+        Validate.notNull(account, "account cannot be null");
+        Validate.notNull(relativeTo, "relativeTo cannot be null");
+        Validate.notNull(matchingPolicy, "matchingPolicy cannot be null");
         Validate.notNull(forecastOn, "forecastOn cannot be null");
+
         Date now = new Date();
         if (forecastOn.before(now)) {
             SimpleDateFormat sdf = new SimpleDateFormat();
             LOG.info("trying to forecast on a date (" + sdf.format(forecastOn) + ") before now (" + sdf.format(now) + "). Returning the closure at that time (the best forecast of what closure the account had then).");
             return account.closure(forecastOn);
         }
-        List<ITransaction> transactions = account.getTransactions();
 
+        List<ITransaction> relevantTransactions = new LinkedList<ITransaction>();
+        for (ITransaction transaction : account.getTransactions()) {
+            if (transaction.getCreditor().equals(relativeTo) || transaction.getDebitor().equals(relativeTo)) {
+                relevantTransactions.add(transaction);
+            }
+        }
+
+        Amount expectedClosure = sumPlannedTransactions(account, forecastOn, matchingPolicy, now, relevantTransactions);
+        return Amount.add(account.closure(now, relativeTo), expectedClosure);
+    }
+
+    public Amount forecast(IAccount account, Date forecastOn, MatchingPolicy matchingPolicy) {
+        Validate.notNull(account, "account cannot be null");
+        Validate.notNull(matchingPolicy, "matchingPolicy cannot be null");
+        Validate.notNull(forecastOn, "forecastOn cannot be null");
+
+        Date now = new Date();
+        if (forecastOn.before(now)) {
+            SimpleDateFormat sdf = new SimpleDateFormat();
+            LOG.info("trying to forecast on a date (" + sdf.format(forecastOn) + ") before now (" + sdf.format(now) + "). Returning the closure at that time (the best forecast of what closure the account had then).");
+            return account.closure(forecastOn);
+        }
+
+        Amount expectedClosure = sumPlannedTransactions(account, forecastOn, matchingPolicy, now, account.getTransactions());
+        return Amount.add(account.closure(now), expectedClosure);
+    }
+
+    private Amount sumPlannedTransactions(IAccount account, Date forecastOn, MatchingPolicy matchingPolicy, Date now, List<ITransaction> transactions) {
         Amount expectedClosure = Amount.noAmount();
         Period forecastPeriod = new Period(now, forecastOn);
         for (IPlannedTransaction plannedTransaction : account.getPlannedTransactions()) {
@@ -76,7 +107,7 @@ class Budget implements IBudget {
                 }
             }
         }
-        return Amount.add(account.closure(now), expectedClosure);
+        return expectedClosure;
     }
 
     public IPlannedTransaction plan(String narration, Amount amount, IAccount debitor, IAccount creditor, Schedule schedule) {
